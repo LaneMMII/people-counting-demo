@@ -1,5 +1,6 @@
 import Koa from 'koa';
 import Router from 'koa-router';
+import { config } from './config';
 
 const app = new Koa();
 const router = new Router();
@@ -10,7 +11,8 @@ router.get('/health', async (ctx) => {
 
 app.use(router.routes()).use(router.allowedMethods());
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+app.listen(config.api.port, config.api.host, () => {
+  console.log(
+    `Server listening on http://${config.api.host}:${config.api.port}`,
+  );
 });
