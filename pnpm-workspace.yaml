@@ -1,0 +1,3 @@
+packages:
+  - 'people-counting-system/*'
+  - 'sensor-system/*'
