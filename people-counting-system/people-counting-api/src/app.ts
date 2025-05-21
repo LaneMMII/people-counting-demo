@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import { config } from './config';
+import { router as v1Router } from './v1/router';
 
 const app = new Koa();
 const router = new Router();
@@ -10,6 +11,7 @@ router.get('/health', async (ctx) => {
 });
 
 app.use(router.routes()).use(router.allowedMethods());
+app.use(v1Router.routes()).use(v1Router.allowedMethods());
 
 export const startServer = () => {
   app.listen(config.api.port, config.api.host, () => {
