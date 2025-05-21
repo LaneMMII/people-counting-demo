@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts"
+    "dev": "nodemon --exec tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "@types/koa-router": "^7.4.8",
     "@types/node": "^22.15.19",
     "@types/pg": "^8.15.2",
+    "nodemon": "^3.1.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }

@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:sensor-api": "cd sensor-system/sensor-api && pnpm start",
-    "dev:sensor-api": "cd sensor-system/sensor-api && pnpm run dev",
-    "start:people-counting-api": "cd people-counting-system/people-counting-api && pnpm start",
-    "dev:people-counting-api": "cd people-counting-system/people-counting-api && pnpm run dev"
+    "start:sensor-api": "pnpm --prefix sensor-system/sensor-api start",
+    "dev:sensor-api": "pnpm --prefix sensor-system/sensor-api dev",
+    "start:people-counting-api": "pnpm --prefix people-counting-system/people-counting-api start",
+    "dev:people-counting-api": "pnpm --prefix people-counting-system/people-counting-api dev",
+    "dev:all": "concurrently \"pnpm run dev:sensor-api\" \"pnpm run dev:people-counting-api\""
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,8 @@
   "packageManager": "pnpm@10.5.0",
   "devDependencies": {
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
   }
 }
