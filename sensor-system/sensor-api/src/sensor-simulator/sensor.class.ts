@@ -6,6 +6,7 @@ export class Sensor {
   businessStartTime: Date;
   businessEndTime: Date;
   dataPushEndpoint: string;
+  handleBusinessHours: boolean = true;
 
   constructor(
     id: number,
@@ -15,6 +16,7 @@ export class Sensor {
     businessStartTime: Date,
     businessEndTime: Date,
     dataPushEndpoint: string,
+    handleBusinessHours?: boolean,
   ) {
     this.id = id;
     this.name = name;
@@ -23,6 +25,14 @@ export class Sensor {
     this.businessStartTime = businessStartTime;
     this.businessEndTime = businessEndTime;
     this.dataPushEndpoint = dataPushEndpoint;
+    this.handleBusinessHours = handleBusinessHours ?? true;
+  }
+
+  start() {
+    this.simulateSensor();
+    setInterval(() => {
+      this.simulateSensor();
+    }, 60000); // 1 minute interval
   }
 
   /**
@@ -30,6 +40,7 @@ export class Sensor {
    *
    * {
    *   "sensorId": 1,
+   *   "name": "Sensor 1",
    *   "timestamp": "2023-10-01T00:00:00Z",
    *   "in": 10,
    *   "out": 5
@@ -37,35 +48,33 @@ export class Sensor {
    *
    * Outside of business hours, the in and out counts are always 0.
    */
-  startSimulation() {
-    setInterval(() => {
-      const now = new Date();
-      const businessStart = new Date(this.businessStartTime);
-      const businessEnd = new Date(this.businessEndTime);
+  simulateSensor() {
+    const now = new Date();
+    const businessStart = new Date(this.businessStartTime);
+    const businessEnd = new Date(this.businessEndTime);
+    const inCount = Math.floor(Math.random() * 16);
+    const outCount = Math.floor(Math.random() * 16);
 
-      if (now >= businessStart && now <= businessEnd) {
-        const inCount = Math.floor(Math.random() * 16);
-        const outCount = Math.floor(Math.random() * 16);
-
-        const packet = {
-          sensorId: this.id,
-          timestamp: now.toISOString(),
-          in: inCount,
-          out: outCount,
-        };
-
-        this.pushData(packet);
-      } else {
-        const packet = {
-          sensorId: this.id,
-          timestamp: now.toISOString(),
-          in: 0,
-          out: 0,
-        };
-
-        this.pushData(packet);
-      }
-    }, 60 * 1000);
+    if (
+      !this.handleBusinessHours ||
+      (this.handleBusinessHours && now >= businessStart && now <= businessEnd)
+    ) {
+      this.pushData({
+        sensorId: this.id,
+        name: this.name,
+        timestamp: now.toISOString(),
+        in: inCount,
+        out: outCount,
+      });
+    } else {
+      this.pushData({
+        sensorId: this.id,
+        name: this.name,
+        timestamp: now.toISOString(),
+        in: 0,
+        out: 0,
+      });
+    }
   }
 
   async pushData(packet: any) {

@@ -13,10 +13,11 @@ export const simulateSensors = async () => {
       sensor.businessStartTime,
       sensor.businessEndTime,
       sensor.dataPushEndpoint,
+      false,
     );
   });
 
   sensorInstances.forEach((sensor) => {
-    sensor.startSimulation();
+    sensor.start();
   });
 };
