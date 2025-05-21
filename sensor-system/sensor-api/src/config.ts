@@ -15,6 +15,6 @@ export const config = {
     port: Number(process.env.DB_PORT) || 5432,
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
-    database: process.env.SENSOR_DB_NAME || 'sensor_db',
+    database: process.env.SENSOR_DB_NAME || 'sensordb',
   },
 };
