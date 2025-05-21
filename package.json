@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:sensor-api": "cd sensor-system/sensor-api && pnpm start",
-    "dev:sensor-api": "cd sensor-system/sensor-api && pnpm run dev"
+    "dev:sensor-api": "cd sensor-system/sensor-api && pnpm run dev",
+    "start:people-counting-api": "cd people-counting-system/people-counting-api && pnpm start",
+    "dev:people-counting-api": "cd people-counting-system/people-counting-api && pnpm run dev"
   },
   "keywords": [],
   "author": "",
