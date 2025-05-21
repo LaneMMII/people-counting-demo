@@ -1,0 +1,21 @@
+CREATE TABLE Location (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(32) NOT NULL,
+    address VARCHAR(128) NOT NULL
+);
+
+CREATE TABLE Device (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(32) NOT NULL,
+    location_id INTEGER NOT NULL,
+    status VARCHAR(16) DEFAULT 'active',
+    FOREIGN KEY (location_id) REFERENCES Location(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Count (
+    id SERIAL PRIMARY KEY,
+    device_id INT NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    count_value INT NOT NULL,
+    FOREIGN KEY (device_id) REFERENCES Device(id) ON DELETE CASCADE
+);
