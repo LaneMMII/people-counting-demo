@@ -9,13 +9,13 @@ VALUES
 
 INSERT INTO Device (name, locationId, status)
 VALUES
-    ('American Eagle East Door', 1, 'active'),
-    ('American Eagle West Door', 1, 'active'),
-    ('Woods Grocery North Door', 2, 'active'),
-    ('Woods Grocery South Door', 2, 'active'),
-    ('Hot Topic', 3, 'active'),
-    ('Game Stop', 4, 'active'),
-    ('Best Buy East Door', 5, 'active'),
-    ('Best Buy West Door', 5, 'active'),
-    ('Target East Door', 6, 'active'),
-    ('Target West Door', 6, 'active');
+    ('American Eagle East Door', 1, TRUE), -- Changed 'active' to TRUE
+    ('American Eagle West Door', 1, TRUE),
+    ('Woods Grocery North Door', 2, TRUE),
+    ('Woods Grocery South Door', 2, TRUE),
+    ('Hot Topic', 3, TRUE),
+    ('Game Stop', 4, TRUE),
+    ('Best Buy East Door', 5, TRUE),
+    ('Best Buy West Door', 5, TRUE),
+    ('Target East Door', 6, TRUE),
+    ('Target West Door', 6, TRUE);
