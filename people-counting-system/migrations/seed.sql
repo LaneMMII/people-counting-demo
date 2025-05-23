@@ -7,7 +7,7 @@ VALUES
     ('Best Buy', '202 Tech Rd'),
     ('Target', '303 Retail Dr');
 
-INSERT INTO Device (name, location_id, status)
+INSERT INTO Device (name, locationId, status)
 VALUES
     ('American Eagle East Door', 1, 'active'),
     ('American Eagle West Door', 1, 'active'),
