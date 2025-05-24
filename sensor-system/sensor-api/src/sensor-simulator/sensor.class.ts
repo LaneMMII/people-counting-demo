@@ -29,7 +29,10 @@ export class Sensor {
   }
 
   start() {
-    this.simulateSensor();
+    // uncomment the following line to simulate the sensor immediately
+    // setTimeout(() => {
+    //   this.simulateSensor();
+    // }, 10000); // 10 seconds delay before the first data push
     setInterval(() => {
       this.simulateSensor();
     }, 60000); // 1 minute interval
