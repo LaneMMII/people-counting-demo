@@ -1,4 +1,4 @@
-INSERT INTO Location (name, address)
+INSERT INTO Location ("name", "address")
 VALUES
     ('American Eagle', '123 Mall St'),
     ('Woods Grocery', '456 Market Ave'),
@@ -7,7 +7,7 @@ VALUES
     ('Best Buy', '202 Tech Rd'),
     ('Target', '303 Retail Dr');
 
-INSERT INTO Device (name, locationId, status)
+INSERT INTO Device ("name", "locationId", "active")
 VALUES
     ('American Eagle East Door', 1, TRUE), -- Changed 'active' to TRUE
     ('American Eagle West Door', 1, TRUE),

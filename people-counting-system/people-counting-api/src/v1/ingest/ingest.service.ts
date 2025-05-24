@@ -13,5 +13,6 @@ interface SensorPacket {
 
 export const ingestSensorDataService = async (packet: SensorPacket) => {
   const { query, replacements } = insertSensorDataQuery(packet);
+
   await executeQuery(query, replacements);
 };

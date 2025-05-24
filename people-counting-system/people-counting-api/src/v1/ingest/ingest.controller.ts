@@ -1,10 +1,15 @@
 import { Context } from 'koa';
 import { ingestSensorDataService } from './ingest.service';
-import 'koa-bodyparser';
 
 export const ingestSensorDataController = async (ctx: Context) => {
   try {
-    const { sensorId, name, timestamp, in: inCount, out: outCount } = (ctx.request as any).body;
+    const {
+      sensorId,
+      name,
+      timestamp,
+      in: inCount,
+      out: outCount,
+    } = (ctx.request as any).body;
 
     if (
       typeof sensorId !== 'number' ||
