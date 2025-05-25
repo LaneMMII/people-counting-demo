@@ -13,12 +13,11 @@ interface SensorPacket {
 export const insertSensorDataQuery = (packet: SensorPacket): Query => {
   return {
     query: `
-      INSERT INTO sensor_data ("sensorId", "name", "timestamp", "in", "out")
-      VALUES (?, ?, ?, ?, ?);
+      INSERT INTO "count" ("sensorId", "timestamp", "in", "out")
+      VALUES ($1, $2, $3, $4);
     `,
     replacements: [
       packet.sensorId,
-      packet.name,
       packet.timestamp,
       packet.in,
       packet.out,
