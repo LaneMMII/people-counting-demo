@@ -29,7 +29,10 @@ export class Sensor {
   }
 
   start() {
-    this.simulateSensor();
+    // uncomment the following line to simulate the sensor immediately
+    // setTimeout(() => {
+    //   this.simulateSensor();
+    // }, 10000); // 10 seconds delay before the first data push
     setInterval(() => {
       this.simulateSensor();
     }, 60000); // 1 minute interval
@@ -79,24 +82,24 @@ export class Sensor {
 
   async pushData(packet: any) {
     console.log(`Pushing data to ${this.dataPushEndpoint}:`, packet);
-    //   try {
-    //     const response = await fetch(this.dataPushEndpoint, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(packet),
-    //     });
+      try {
+        const response = await fetch(this.dataPushEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(packet),
+        });
 
-    //     if (!response.ok) {
-    //       throw new Error(`Network response was not ok: ${response.statusText}`);
-    //     }
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
 
-    //     const data = await response.json();
-    //     console.log('Data pushed successfully:', data);
-    //   } catch (error) {
-    //     console.error('Error pushing data:', error);
-    //   }
-    //   console.log(`Pushing data to ${this.dataPushEndpoint}:`, packet);
+        const data = await response.json();
+        console.log('Data pushed successfully:', data);
+      } catch (error) {
+        console.error('Error pushing data:', error);
+      }
+      console.log(`Pushing data to ${this.dataPushEndpoint}:`, packet);
   }
 }

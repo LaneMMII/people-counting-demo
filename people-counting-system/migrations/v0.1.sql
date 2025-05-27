@@ -19,9 +19,9 @@ CREATE TABLE Device (
 
 CREATE TABLE Count (
     "id" SERIAL PRIMARY KEY,
-    "deviceId" INT NOT NULL,
+    "sensorId" INT NOT NULL,
     "timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "in" INT NOT NULL,
     "out" INT NOT NULL,
-    FOREIGN KEY ("deviceId") REFERENCES Device("id") ON DELETE CASCADE
+    FOREIGN KEY ("sensorId") REFERENCES Device("id") ON DELETE CASCADE
 );

@@ -1,10 +1,13 @@
 import Koa from 'koa';
 import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
 import { config } from './config';
 import { router as v1Router } from './v1/router';
 
 const app = new Koa();
 const router = new Router();
+
+app.use(bodyParser());
 
 router.get('/health', async (ctx) => {
   ctx.body = { status: 'OK' };
