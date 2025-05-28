@@ -54,4 +54,17 @@ pnpm install
   pnpm dev:all
   ```
 
+## Debugging
+
+You can also run the APIs in debug mode using the provided VS Code launch configurations.
+
+1. Open the "Run and Debug" view in VS Code (usually found in the sidebar, or by pressing `Cmd+Shift+D` or `Ctrl+Shift+D`).
+2. In the dropdown menu at the top, select one of the following configurations:
+   - **"Launch People Counting API"**: Starts only the People Counting API in debug mode.
+   - **"Launch Sensor API"**: Starts only the Sensor API in debug mode.
+   - **"Launch Both APIs"**: Starts both APIs in debug mode (recommended).
+3. Click the green "Start Debugging" play button (or press `F5`).
+
+This will start the selected API(s) with the debugger attached, allowing you to set breakpoints, inspect variables, and step through the code.
+
 ---

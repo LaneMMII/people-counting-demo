@@ -82,24 +82,23 @@ export class Sensor {
 
   async pushData(packet: any) {
     console.log(`Pushing data to ${this.dataPushEndpoint}:`, packet);
-      try {
-        const response = await fetch(this.dataPushEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(packet),
-        });
+    try {
+      const response = await fetch(this.dataPushEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(packet),
+      });
 
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Data pushed successfully:', data);
-      } catch (error) {
-        console.error('Error pushing data:', error);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
       }
-      console.log(`Pushing data to ${this.dataPushEndpoint}:`, packet);
+
+      const data = await response.json();
+      console.log('Data pushed successfully:', data);
+    } catch (error) {
+      console.error('Error pushing data:', error);
+    }
   }
 }
