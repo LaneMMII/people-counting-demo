@@ -18,7 +18,7 @@ export async function getLocationByIdService(id: number) {
   return getLocationById(id);
 }
 
-export async function updateLocationService(id: number, data: { name?: string }) {
+export async function updateLocationService(id: number, data: { name?: string; address?: string }) {
   return updateLocation(id, data);
 }
 

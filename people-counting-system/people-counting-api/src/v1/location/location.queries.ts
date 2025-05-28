@@ -24,7 +24,7 @@ export async function getLocationById(id: number): Promise<Location | null> {
 
 export async function updateLocation(
   id: number,
-  data: { name?: string }
+  data: { name?: string; address?: string }
 ): Promise<Location | null> {
   const fields = [];
   const values = [];
@@ -33,6 +33,10 @@ export async function updateLocation(
   if (data.name !== undefined) {
     fields.push(`"name" = $${idx++}`);
     values.push(data.name);
+  }
+  if (data.address !== undefined) {
+    fields.push(`"address" = $${idx++}`);
+    values.push(data.address);
   }
   if (fields.length === 0) return null;
 
