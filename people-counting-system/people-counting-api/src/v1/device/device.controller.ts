@@ -7,18 +7,17 @@ import {
     deleteDeviceService,
  } from './device.service';
 
+ import { deviceCreateSchema, deviceUpdateSchema } from './device.schema';
+
 export const createDeviceController = async (ctx: Context) => {
   try {
-    const { name, locationId } = (ctx.request as any).body;
-
-    if (typeof name !== 'string' || typeof locationId !== 'number') {
+    const parseResult = deviceCreateSchema.safeParse((ctx.request as any).body);
+    if (!parseResult.success) {
       ctx.status = 400;
-      ctx.body = { error: 'Invalid payload format' };
+      ctx.body = { error: 'Invalid payload format', details: parseResult.error.errors };
       return;
     }
-
-    const device = await createDeviceService({ name, locationId });
-
+    const device = await createDeviceService(parseResult.data);
     ctx.status = 201;
     ctx.body = { message: 'Device created successfully', device };
   } catch (err) {
@@ -62,13 +61,18 @@ export const getDeviceByIdController = async (ctx: Context) => {
 export const updateDeviceController = async (ctx: Context) => {
   try {
     const id = Number(ctx.params.id);
-    const { name, locationId, active } = (ctx.request as any).body;
+    const parseResult = deviceUpdateSchema.safeParse((ctx.request as any).body);
     if (isNaN(id)) {
       ctx.status = 400;
       ctx.body = { error: 'Invalid device ID' };
       return;
     }
-    const device = await updateDeviceService(id, { name, locationId, active });
+    if (!parseResult.success) {
+      ctx.status = 400;
+      ctx.body = { error: 'Invalid payload format', details: parseResult.error.errors };
+      return;
+    }
+    const device = await updateDeviceService(id, parseResult.data);
     if (!device) {
       ctx.status = 404;
       ctx.body = { error: 'Device not found' };

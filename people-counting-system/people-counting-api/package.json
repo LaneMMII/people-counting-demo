@@ -19,7 +19,8 @@
     "koa": "^3.0.0",
     "koa-bodyparser": "^4.4.1",
     "koa-router": "^13.0.1",
-    "pg": "^8.16.0"
+    "pg": "^8.16.0",
+    "zod": "^3.25.32"
   },
   "devDependencies": {
     "@types/koa": "^2.15.0",
