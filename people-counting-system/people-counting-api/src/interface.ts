@@ -28,6 +28,7 @@ export interface Device {
 export interface Location {
   id: number;
   name: string;
+  address: string;
   created: string;
   updated: string;
   deleted: string | null;
