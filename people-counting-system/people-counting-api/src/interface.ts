@@ -18,7 +18,7 @@ export interface Device {
   active: boolean;
   created: string;
   updated: string;
-  deleted: string | null;
+  deleted: string | undefined;
 }
 
 //TODO: Extract to sdk
@@ -31,5 +31,5 @@ export interface Location {
   address: string;
   created: string;
   updated: string;
-  deleted: string | null;
+  deleted: string | undefined;
 }
