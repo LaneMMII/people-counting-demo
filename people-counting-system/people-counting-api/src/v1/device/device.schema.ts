@@ -7,7 +7,7 @@ export const deviceCreateSchema = z.object({
 });
 
 export const deviceUpdateSchema = z.object({
-  name: z.string().min(1).optional(),
-  locationId: z.number().int().optional(),
+  name: z.string().min(1),
+  locationId: z.number().int(),
   active: z.boolean()
 });

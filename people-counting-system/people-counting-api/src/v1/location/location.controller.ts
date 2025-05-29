@@ -1,22 +1,25 @@
 import { Context } from 'koa';
+
 import {
-  createLocationService,
-  getAllLocationsService,
-  getLocationByIdService,
-  updateLocationService,
-  deleteLocationService,
+  createLocation,
+  getAllLocations,
+  getLocationById,
+  updateLocation,
+  deleteLocation,
 } from './location.service';
+
 import { locationCreateSchema, locationUpdateSchema } from './location.schema';
 
 export const createLocationController = async (ctx: Context) => {
+  const validation = locationCreateSchema.safeParse(ctx.request.body);
   try {
-    const parseResult = locationCreateSchema.safeParse((ctx.request as any).body);
-    if (!parseResult.success) {
+    if (!validation.success) {
       ctx.status = 400;
-      ctx.body = { error: 'Invalid payload format', details: parseResult.error.errors };
+      ctx.body = { error: 'Invalid payload format', details: validation.error.errors };
       return;
     }
-    const location = await createLocationService(parseResult.data);
+    const { name, address } = validation.data;
+    const location = await createLocation(name, address);
     ctx.status = 201;
     ctx.body = { message: 'Location created successfully', location };
   } catch (err) {
@@ -27,7 +30,7 @@ export const createLocationController = async (ctx: Context) => {
 
 export const getAllLocationsController = async (ctx: Context) => {
   try {
-    const locations = await getAllLocationsService();
+    const locations = await getAllLocations();
     ctx.body = { locations };
   } catch (err) {
     ctx.status = 500;
@@ -43,7 +46,7 @@ export const getLocationByIdController = async (ctx: Context) => {
       ctx.body = { error: 'Invalid location ID' };
       return;
     }
-    const location = await getLocationByIdService(id);
+    const location = await getLocationById(id);
     if (!location) {
       ctx.status = 404;
       ctx.body = { error: 'Location not found' };
@@ -59,18 +62,24 @@ export const getLocationByIdController = async (ctx: Context) => {
 export const updateLocationController = async (ctx: Context) => {
   try {
     const id = Number(ctx.params.id);
-    const parseResult = locationUpdateSchema.safeParse((ctx.request as any).body);
+    const validation = locationUpdateSchema.safeParse(ctx.request.body);
     if (isNaN(id)) {
       ctx.status = 400;
       ctx.body = { error: 'Invalid location ID' };
       return;
     }
-    if (!parseResult.success) {
+    if (!validation.success) {
       ctx.status = 400;
-      ctx.body = { error: 'Invalid payload format', details: parseResult.error.errors };
+      ctx.body = { error: 'Invalid payload format', details: validation.error.errors };
       return;
     }
-    const location = await updateLocationService(id, parseResult.data);
+    const { name, address } = validation.data;
+    if (typeof name !== 'string' || typeof address !== 'string') {
+      ctx.status = 400;
+      ctx.body = { error: 'Invalid payload: name and address are required.' };
+      return;
+    }
+    const location = await updateLocation(id, name, address);
     if (!location) {
       ctx.status = 404;
       ctx.body = { error: 'Location not found' };
@@ -91,7 +100,7 @@ export const deleteLocationController = async (ctx: Context) => {
       ctx.body = { error: 'Invalid location ID' };
       return;
     }
-    const deleted = await deleteLocationService(id);
+    const deleted = await deleteLocation(id);
     if (!deleted) {
       ctx.status = 404;
       ctx.body = { error: 'Location not found' };

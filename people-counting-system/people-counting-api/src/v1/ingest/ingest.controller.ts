@@ -4,14 +4,14 @@ import { ingestSchema } from './ingest.schema';
 
 export const ingestSensorDataController = async (ctx: Context) => {
   try {
-    const parseResult = ingestSchema.safeParse((ctx.request as any).body);
-    if (!parseResult.success) {
+    const validation = ingestSchema.safeParse(ctx.request.body);
+    if (!validation.success) {
       ctx.status = 400;
-      ctx.body = { error: 'Invalid payload format', details: parseResult.error.errors };
+      ctx.body = { error: 'Invalid payload format', details: validation.error.errors };
       return;
     }
 
-    await ingestSensorDataService(parseResult.data);
+    await ingestSensorDataService(validation.data);
 
     ctx.status = 200;
     ctx.body = { message: 'Sensor data ingested successfully' };

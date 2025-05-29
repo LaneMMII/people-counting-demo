@@ -6,7 +6,7 @@ import {
     getDeviceById,
     updateDevice,
     deleteDevice,
- } from './device.service';
+} from './device.service';
 
 import { deviceCreateSchema, deviceUpdateSchema } from './device.schema';
 
