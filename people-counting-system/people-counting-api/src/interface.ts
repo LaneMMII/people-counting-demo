@@ -33,3 +33,20 @@ export interface Location {
   updated: string;
   deleted: string | undefined;
 }
+
+//TODO: Extract to sdk
+/**
+ * "Shape" of a count object
+ */
+
+export interface CountBucket {
+  timestamp: string;
+  in: number;
+  out: number;
+}
+
+export interface CountResponse {
+  deviceId: number;
+  name: string;
+  counts: CountBucket[];
+}

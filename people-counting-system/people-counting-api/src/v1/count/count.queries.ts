@@ -1,28 +1,23 @@
-import { type Query } from '../../interface';
+import { Query } from '../../interface';
 
-export const getAllSampleQuery = (): Query => {
+export function getAggregatedCountQuery(
+  deviceId: number,
+  start: string,
+  end: string,
+  aggregate: string
+): Query {
   return {
     query: `
       SELECT
-        "id"
-        ,"name"
-      FROM sample
-      WHERE "deleted" IS NULL;
+        DATE_TRUNC($4, "timestamp") AS bucket,
+        SUM("in") AS in,
+        SUM("out") AS out
+      FROM "count"
+      WHERE "sensorId" = $1
+        AND "timestamp" BETWEEN $2 AND $3
+      GROUP BY bucket
+      ORDER BY bucket ASC;
     `,
-    replacements: [],
+    replacements: [deviceId, start, end, aggregate],
   };
-};
-
-export const getSampleQueryById = (id: number): Query => {
-  return {
-    query: `
-      SELECT
-        "id"
-        ,"name"
-      FROM sample
-      WHERE "deleted" IS NULL
-        AND "id" = $1;
-    `,
-    replacements: [id],
-  };
-};
+}
