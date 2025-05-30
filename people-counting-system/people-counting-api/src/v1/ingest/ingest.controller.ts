@@ -1,35 +1,17 @@
 import { Context } from 'koa';
 import { ingestSensorDataService } from './ingest.service';
+import { ingestSchema } from './ingest.schema';
 
 export const ingestSensorDataController = async (ctx: Context) => {
   try {
-    const {
-      sensorId,
-      name,
-      timestamp,
-      in: inCount,
-      out: outCount,
-    } = (ctx.request as any).body;
-
-    if (
-      typeof sensorId !== 'number' ||
-      typeof name !== 'string' ||
-      typeof timestamp !== 'string' ||
-      typeof inCount !== 'number' ||
-      typeof outCount !== 'number'
-    ) {
+    const validation = ingestSchema.safeParse(ctx.request.body);
+    if (!validation.success) {
       ctx.status = 400;
-      ctx.body = { error: 'Invalid payload format' };
+      ctx.body = { error: 'Invalid payload format', details: validation.error.errors };
       return;
     }
 
-    await ingestSensorDataService({
-      sensorId,
-      name,
-      timestamp,
-      in: inCount,
-      out: outCount,
-    });
+    await ingestSensorDataService(validation.data);
 
     ctx.status = 200;
     ctx.body = { message: 'Sensor data ingested successfully' };
