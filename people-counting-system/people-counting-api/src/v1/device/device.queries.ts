@@ -1,29 +1,50 @@
-import { Device } from '../../interface';
+import { type Query } from '../../interface';
 
-export function getInsertDeviceQuery(name: string, locationId: number, active: boolean) {
+export function getInsertDeviceQuery(name: string, locationId: number, active: boolean): Query {
   return {
     query: `
       INSERT INTO "device" ("name", "locationId", "active")
       VALUES ($1, $2, $3)
       RETURNING *;
     `,
-    replacements: [name, locationId, active ?? true]
+    replacements: [name, locationId, active]
   };
 }
 
 export function getAllDevicesQuery() {
   return {
-    query: `SELECT * FROM "device" WHERE "deleted" IS NULL ORDER BY "id" ASC;`,
-    replacements: []
+    query: `
+      SELECT
+          "id"
+        , "name"
+        , "locationId"
+        , "active"
+        , "created"
+        , "updated"
+        , "deleted"
+      FROM "device"
+      WHERE "deleted" IS NULL;`,
+    replacements: [],
   };
 }
 
-export function getDeviceByIdQuery(id: number) {
-  return {
-    query: `SELECT * FROM "device" WHERE "id" = $1 AND "deleted" IS NULL;`,
-    replacements: [id]
-  };
-}
+export function getDeviceByIdQuery(id: number): Query {  
+  return {  
+    query: `  
+      SELECT  
+          "id"  
+        , "name"  
+        , "locationId"  
+        , "active"  
+        , "created"  
+        , "updated"  
+        , "deleted"  
+      FROM "device"  
+      WHERE "id" = $1  
+      AND "deleted" IS NULL;`,  
+    replacements: [id],  
+  };  
+}  
 
 export function getUpdateDeviceQuery(id: number, name: string, locationId: number, active: boolean) {
   return {
