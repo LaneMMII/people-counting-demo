@@ -1,5 +1,5 @@
 import { executeQuery } from "../../db";
-import { getAggregatedCountUnifiedQuery } from "./count.queries";
+import { getAggregatedCountByDeviceQuery, getAggregatedCountByLocationQuery } from "./count.queries";
 import { CountResponse } from "../../interface";
 import { getAllDevicesQuery, getDeviceByIdQuery } from "../device/device.queries";
 
@@ -10,13 +10,26 @@ export const getAggregatedCount = async (
   end: string | undefined,
   aggregate: string | undefined
 ): Promise<CountResponse[]> => {
-  const { query, replacements } = getAggregatedCountUnifiedQuery(
-    deviceId,
-    locationId,
-    start ?? "",
-    end ?? "",
-    aggregate ?? "hour"
-  );
+  let queryObj;
+  if (deviceId !== undefined) {
+    queryObj = getAggregatedCountByDeviceQuery(
+      deviceId,
+      start ?? "",
+      end ?? "",
+      aggregate ?? "hour"
+    );
+  } else if (locationId !== undefined) {
+    queryObj = getAggregatedCountByLocationQuery(
+      locationId,
+      start ?? "",
+      end ?? "",
+      aggregate ?? "hour"
+    );
+  } else {
+    throw new Error("Either deviceId or locationId must be provided.");
+  }
+
+  const { query, replacements } = queryObj;
   const rows = await executeQuery<any>(query, replacements);
 
   // Group results by device

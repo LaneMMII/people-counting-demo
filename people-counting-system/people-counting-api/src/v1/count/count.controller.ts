@@ -45,17 +45,12 @@ export const getAggregatedCountController = async (ctx: any) => {
   }
 
   const agg = aggregate || 'minute';
-  if (!AGGREGATES.includes(agg)) {
-    ctx.status = 400;
-    ctx.body = { error: `Invalid aggregate value. Allowed values are: ${AGGREGATES.join(', ')}` };
-    return;
-  }
 
   try {
     const result = await getAggregatedCount(
       deviceId,
       locationId,
-      start || new Date(0).toISOString(),
+      start || new Date().toISOString(), 
       end || new Date().toISOString(),
       agg
     );
