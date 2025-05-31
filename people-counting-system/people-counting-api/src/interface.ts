@@ -39,7 +39,7 @@ export interface Location {
  * "Shape" of a count object
  */
 
-export interface CountBucket {
+export interface Count {
   timestamp: string;
   in: number;
   out: number;
@@ -48,5 +48,5 @@ export interface CountBucket {
 export interface CountResponse {
   deviceId: number;
   name: string;
-  counts: CountBucket[];
+  counts: Count[];
 }
