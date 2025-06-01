@@ -9,17 +9,15 @@ export function getAggregatedCountByDeviceQuery(
   return {
     query: `
       SELECT
-        d.id AS deviceId,
-        d.name AS deviceName,
+        c."deviceId" AS deviceId,
         DATE_TRUNC($1, c."timestamp") AS bucket,
         SUM(c."in") AS in,
         SUM(c."out") AS out
       FROM "count" c
-      WHERE d.active = TRUE
-        AND d.id = $2
+      WHERE c."deviceId" = $2
         AND c."timestamp" BETWEEN $3 AND $4
-      GROUP BY d.id, d.name, bucket
-      ORDER BY d.id, bucket ASC;
+      GROUP BY c."deviceId", bucket
+      ORDER BY c."deviceId", bucket ASC;
     `,
     replacements: [aggregate, deviceId, start, end],
   };
@@ -34,17 +32,16 @@ export function getAggregatedCountByLocationQuery(
   return {
     query: `
       SELECT
-        d.id AS deviceId,
-        d.name AS deviceName,
+        c."deviceId" AS deviceId,
         DATE_TRUNC($1, c."timestamp") AS bucket,
         SUM(c."in") AS in,
         SUM(c."out") AS out
       FROM "count" c
-      WHERE d.active = TRUE
-        AND d."locationId" = $2
+      JOIN "device" d ON d.id = c."deviceId"
+      WHERE d."locationId" = $2
         AND c."timestamp" BETWEEN $3 AND $4
-      GROUP BY d.id, d.name, bucket
-      ORDER BY d.id, bucket ASC;
+      GROUP BY c."deviceId", bucket
+      ORDER BY c."deviceId", bucket ASC;
     `,
     replacements: [aggregate, locationId, start, end],
   };
