@@ -1,5 +1,5 @@
 import z from 'zod';
-import { getAggregatedCount } from './count.service';
+import { getAggregatedCountByDevice, getAggregatedCountByLocation } from './count.service';
 
 const AGGREGATES = ['minute', 'hour', 'day', 'week'] as const;
 
@@ -31,29 +31,29 @@ export const getAggregatedCountController = async (ctx: any) => {
   }
 
   const { deviceId, locationId, start, end, aggregate } = parseResult.data;
-
-  if ((deviceId && locationId) || (!deviceId && !locationId)) {
-    ctx.status = 400;
-    ctx.body = { error: 'Please provide either deviceId or locationId, but not both.' };
-    return;
-  }
-
-  if (start && end && new Date(start) > new Date(end)) {
-    ctx.status = 400;
-    ctx.body = { error: 'Start date must be before end date.' };
-    return;
-  }
-
   const agg = aggregate || 'minute';
 
   try {
-    const result = await getAggregatedCount(
-      deviceId,
-      locationId,
-      start || new Date().toISOString(), 
-      end || new Date().toISOString(),
-      agg
-    );
+    let result;
+    if (deviceId !== undefined) {
+      result = await getAggregatedCountByDevice(
+        deviceId,
+        start || new Date().toISOString(),
+        end || new Date().toISOString(),
+        agg
+      );
+    } else if (locationId !== undefined) {
+      result = await getAggregatedCountByLocation(
+        locationId,
+        start || new Date().toISOString(),
+        end || new Date().toISOString(),
+        agg
+      );
+    } else {
+      ctx.status = 400;
+      ctx.body = { error: "Either deviceId or locationId must be provided" };
+      return;
+    }
 
     ctx.body = result;
   } catch (err) {

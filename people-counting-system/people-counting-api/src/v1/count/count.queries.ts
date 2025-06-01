@@ -1,28 +1,5 @@
 import { Query } from '../../interface';
 
-
-export function getAggregatedCountQuery(
-  deviceId: number,
-  start: string,
-  end: string,
-  aggregate: string
-): Query {
-  return {
-    query: `
-      SELECT
-        DATE_TRUNC($1, "timestamp") AS bucket,
-        SUM("in") AS in,
-        SUM("out") AS out
-      FROM "count"
-      WHERE "sensorId" = $2
-        AND "timestamp" BETWEEN $3 AND $4
-      GROUP BY bucket
-      ORDER BY bucket ASC;
-    `,
-    replacements: [aggregate, deviceId, start, end],
-  };
-}
-
 export function getAggregatedCountByDeviceQuery(
   deviceId: number,
   start: string,
@@ -38,7 +15,6 @@ export function getAggregatedCountByDeviceQuery(
         SUM(c."in") AS in,
         SUM(c."out") AS out
       FROM "count" c
-      JOIN "device" d ON c."sensorId" = d.id
       WHERE d.active = TRUE
         AND d.id = $2
         AND c."timestamp" BETWEEN $3 AND $4
@@ -64,7 +40,6 @@ export function getAggregatedCountByLocationQuery(
         SUM(c."in") AS in,
         SUM(c."out") AS out
       FROM "count" c
-      JOIN "device" d ON c."sensorId" = d.id
       WHERE d.active = TRUE
         AND d."locationId" = $2
         AND c."timestamp" BETWEEN $3 AND $4

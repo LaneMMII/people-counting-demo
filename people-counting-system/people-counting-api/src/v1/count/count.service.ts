@@ -1,35 +1,54 @@
 import { executeQuery } from "../../db";
 import { getAggregatedCountByDeviceQuery, getAggregatedCountByLocationQuery } from "./count.queries";
 import { CountResponse } from "../../interface";
-import { getAllDevicesQuery, getDeviceByIdQuery } from "../device/device.queries";
 
-export const getAggregatedCount = async (
-  deviceId: number | undefined,
-  locationId: number | undefined,
-  start: string | undefined,
-  end: string | undefined,
-  aggregate: string | undefined
+// Get aggregated count by device
+export const getAggregatedCountByDevice = async (
+  deviceId: number,
+  start: string,
+  end: string,
+  aggregate: string
 ): Promise<CountResponse[]> => {
-  let queryObj;
-  if (deviceId !== undefined) {
-    queryObj = getAggregatedCountByDeviceQuery(
-      deviceId,
-      start ?? "",
-      end ?? "",
-      aggregate ?? "hour"
-    );
-  } else if (locationId !== undefined) {
-    queryObj = getAggregatedCountByLocationQuery(
-      locationId,
-      start ?? "",
-      end ?? "",
-      aggregate ?? "hour"
-    );
-  } else {
-    throw new Error("Either deviceId or locationId must be provided.");
-  }
+  const { query, replacements } = getAggregatedCountByDeviceQuery(
+    deviceId,
+    start,
+    end,
+    aggregate
+  );
+  const rows = await executeQuery<any>(query, replacements);
 
-  const { query, replacements } = queryObj;
+  // Group results by device
+  const grouped: Record<number, CountResponse> = {};
+  for (const row of rows) {
+    if (!grouped[row.deviceid]) {
+      grouped[row.deviceid] = {
+        deviceId: row.deviceid,
+        name: row.devicename,
+        counts: [],
+      };
+    }
+    grouped[row.deviceid].counts.push({
+      timestamp: row.bucket,
+      in: Number(row.in),
+      out: Number(row.out),
+    });
+  }
+  return Object.values(grouped);
+};
+
+// Get aggregated count by location
+export const getAggregatedCountByLocation = async (
+  locationId: number,
+  start: string,
+  end: string,
+  aggregate: string
+): Promise<CountResponse[]> => {
+  const { query, replacements } = getAggregatedCountByLocationQuery(
+    locationId,
+    start,
+    end,
+    aggregate
+  );
   const rows = await executeQuery<any>(query, replacements);
 
   // Group results by device
