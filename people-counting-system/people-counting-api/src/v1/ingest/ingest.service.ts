@@ -4,7 +4,7 @@ import { insertSensorDataQuery } from './ingest.queries';
 import { executeQuery } from '../../db';
 
 interface SensorPacket {
-  sensorId: number;
+  deviceId: number;
   name: string;
   timestamp: string;
   in: number;

@@ -1,28 +1,48 @@
-import { type Query } from '../../interface';
+import { Query } from '../../interface';
 
-export const getAllSampleQuery = (): Query => {
+export function getAggregatedCountByDeviceQuery(
+  deviceId: number,
+  start: string,
+  end: string,
+  aggregate: string
+): Query {
   return {
     query: `
       SELECT
-        "id"
-        ,"name"
-      FROM sample
-      WHERE "deleted" IS NULL;
+        c."deviceId" AS deviceId,
+        DATE_TRUNC($1, c."timestamp") AS bucket,
+        SUM(c."in") AS in,
+        SUM(c."out") AS out
+      FROM "count" c
+      WHERE c."deviceId" = $2
+        AND c."timestamp" BETWEEN $3 AND $4
+      GROUP BY c."deviceId", bucket
+      ORDER BY c."deviceId", bucket ASC;
     `,
-    replacements: [],
+    replacements: [aggregate, deviceId, start, end],
   };
-};
+}
 
-export const getSampleQueryById = (id: number): Query => {
+export function getAggregatedCountByLocationQuery(
+  locationId: number,
+  start: string,
+  end: string,
+  aggregate: string
+): Query {
   return {
     query: `
       SELECT
-        "id"
-        ,"name"
-      FROM sample
-      WHERE "deleted" IS NULL
-        AND "id" = $1;
+        c."deviceId" AS deviceId,
+        DATE_TRUNC($1, c."timestamp") AS bucket,
+        SUM(c."in") AS in,
+        SUM(c."out") AS out
+      FROM "count" c
+      JOIN "device" d ON d.id = c."deviceId"
+      WHERE d."locationId" = $2
+        AND c."timestamp" BETWEEN $3 AND $4
+      GROUP BY c."deviceId", bucket
+      ORDER BY c."deviceId", bucket ASC;
     `,
-    replacements: [id],
+    replacements: [aggregate, locationId, start, end],
   };
-};
+}
