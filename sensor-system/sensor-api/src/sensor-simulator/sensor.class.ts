@@ -63,7 +63,7 @@ export class Sensor {
       (this.handleBusinessHours && now >= businessStart && now <= businessEnd)
     ) {
       this.pushData({
-        sensorId: this.id,
+        deviceId: this.id,
         name: this.name,
         timestamp: now.toISOString(),
         in: inCount,
@@ -71,7 +71,7 @@ export class Sensor {
       });
     } else {
       this.pushData({
-        sensorId: this.id,
+        deviceId: this.id,
         name: this.name,
         timestamp: now.toISOString(),
         in: 0,
