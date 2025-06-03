@@ -1,0 +1,7 @@
+{
+  "name": "people-counting-client",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

@@ -9,7 +9,8 @@
     "dev:sensor-api": "pnpm --prefix sensor-system/sensor-api dev",
     "start:people-counting-api": "pnpm --prefix people-counting-system/people-counting-api start",
     "dev:people-counting-api": "pnpm --prefix people-counting-system/people-counting-api dev",
-    "dev:all": "concurrently \"pnpm run dev:sensor-api\" \"pnpm run dev:people-counting-api\""
+    "dev:people-counting-client": "pnpm --prefix people-counting-system/people-counting-client dev",
+    "dev:all": "concurrently \"pnpm run dev:sensor-api\" \"pnpm run dev:people-counting-api\" \"pnpm run dev:people-counting-client\""
   },
   "keywords": [],
   "author": "",
