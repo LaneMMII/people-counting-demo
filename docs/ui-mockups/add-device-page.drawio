@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0" version="27.1.1">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0" version="27.1.3">
   <diagram name="Add Device" id="kF4YShvbi_fj0plPMK6o">
     <mxGraphModel dx="1426" dy="751" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -16,20 +16,11 @@
         <mxCell id="x9AbXLbFvyV0TLv96JMu-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
           <mxGeometry x="20" y="100" width="1130" height="660" as="geometry" />
         </mxCell>
-        <mxCell id="x9AbXLbFvyV0TLv96JMu-6" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
-          <mxGeometry x="43.75" y="390" width="160" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="x9AbXLbFvyV0TLv96JMu-7" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
           <mxGeometry x="20" y="100" width="1130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="x9AbXLbFvyV0TLv96JMu-8" value="Add Device" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
           <mxGeometry x="535" y="110" width="100" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="x9AbXLbFvyV0TLv96JMu-9" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
-          <mxGeometry x="40" y="180" width="280" height="85" as="geometry" />
-        </mxCell>
-        <mxCell id="x9AbXLbFvyV0TLv96JMu-10" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
-          <mxGeometry x="43.75" y="290" width="280" height="85" as="geometry" />
         </mxCell>
         <mxCell id="x9AbXLbFvyV0TLv96JMu-11" value="Name" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" parent="x9AbXLbFvyV0TLv96JMu-1" vertex="1">
           <mxGeometry x="30" y="180" width="100" height="40" as="geometry" />
