@@ -5,6 +5,7 @@
 - **Node.js**: v22 or higher
 - **pnpm**: v10 or higher
 - **PostgreSQL**: Ensure you have access to a running PostgreSQL instance
+- **Ionic CLI**: v7 or higher
 
 ## Setup
 
@@ -53,6 +54,16 @@ pnpm install
   ```sh
   pnpm dev:all
   ```
+
+## Running the Client Application
+
+Start the client application locally with:
+
+```sh
+pnpm dev:people-counting-client
+```
+
+This will launch the frontend "people-counting" application that will connect to the people-counting-api. The client app should automatically open in your default browser on port 8100.
 
 ## Debugging
 
