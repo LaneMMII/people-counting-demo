@@ -16,7 +16,7 @@
     </ion-button>
   </div>
 
-  <div *ngFor="let device of devices" style="margin-bottom: 12px">
+  <div *ngFor="let device of devices$ | async" style="margin-bottom: 12px">
     <ion-card style="margin: 0">
       <ion-card-content style="padding: 8px 12px">
         <div

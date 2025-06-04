@@ -15,6 +15,8 @@ import {
 import { addIcons } from 'ionicons';
 import { addCircle } from 'ionicons/icons';
 
+import { Observable, of } from 'rxjs';
+
 @Component({
   selector: 'app-device',
   templateUrl: './device.page.html',
@@ -34,20 +36,24 @@ import { addCircle } from 'ionicons/icons';
   ],
 })
 export class DevicePage implements OnInit {
-  devices = [
-    { name: 'American Eagle Sensor 1', bold: true },
-    { name: 'American Eagle Sensor 2', bold: true },
-    { name: 'Woods Sensor 1', bold: true },
-    { name: 'Woods Sensor 2', bold: true },
-    { name: 'Gap Sensor 1', bold: true },
-    { name: 'Gap Sensor 2', bold: true },
-    { name: 'Build a Bear Sensor 1', bold: true },
-    { name: 'Build a Bear Sensor 2', bold: true },
-  ];
+  devices$ !: Observable<any[]>;
 
   constructor() {
     addIcons({ addCircle });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.devices$ = of([
+      { id: 1, name: "American Eagle East Door", locationId: 1, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 2, name: "American Eagle West Door", locationId: 1, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 3, name: "Woods Grocery North Door", locationId: 2, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 4, name: "Woods Grocery South Door", locationId: 2, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 5, name: "Hot Topic", locationId: 3, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 6, name: "Game Stop", locationId: 4, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 7, name: "Best Buy East Door", locationId: 5, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 8, name: "Best Buy West Door", locationId: 5, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 9, name: "Target East Door", locationId: 6, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null },
+      { id: 10, name: "Target West Door", locationId: 6, active: true, created: "2025-06-01T01:19:25.296Z", updated: "2025-06-01T01:19:25.296Z", deleted: null }
+    ]);
+  }
 }
