@@ -35,14 +35,14 @@ import { addCircle } from 'ionicons/icons';
 })
 export class DevicePage implements OnInit {
   devices = [
-    { name: 'American Eagle Sensor 1', bold: false },
-    { name: 'American Eagle Sensor 2', bold: false },
+    { name: 'American Eagle Sensor 1', bold: true },
+    { name: 'American Eagle Sensor 2', bold: true },
     { name: 'Woods Sensor 1', bold: true },
     { name: 'Woods Sensor 2', bold: true },
     { name: 'Gap Sensor 1', bold: true },
     { name: 'Gap Sensor 2', bold: true },
-    { name: 'Build a Bear Sensor 1', bold: false },
-    { name: 'Build a Bear Sensor 2', bold: false },
+    { name: 'Build a Bear Sensor 1', bold: true },
+    { name: 'Build a Bear Sensor 2', bold: true },
   ];
 
   constructor() {
