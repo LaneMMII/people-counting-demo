@@ -6,6 +6,8 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
+  IonMenuButton,
+  IonButtons,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -20,6 +22,8 @@ import {
     IonToolbar,
     CommonModule,
     FormsModule,
+    IonMenuButton,
+    IonButtons,
   ],
 })
 export class DevicePage implements OnInit {
