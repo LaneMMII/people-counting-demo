@@ -9,7 +9,13 @@ import {
   IonButton,
   IonIcon,
   IonCard,
-  IonCardContent
+  IonCardContent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonList,
+  IonLabel,
+  IonItem
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -31,6 +37,12 @@ import { Observable, of } from 'rxjs';
     IonIcon,
     IonCard,
     IonCardContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonItem,
+    IonList,
+    IonLabel,
     CommonModule,
     FormsModule,
   ],

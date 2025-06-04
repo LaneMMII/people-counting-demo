@@ -5,43 +5,25 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div style="display: flex; justify-content: flex-end; margin-bottom: 16px">
-    <ion-button color="primary" fill="outline">
-      <ion-icon
-        slot="start"
-        name="add-circle"
-        style="font-size: 24px"
-      ></ion-icon>
-      Add Device
-    </ion-button>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-right">
+        <ion-button color="primary">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Add Device
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <div *ngFor="let device of devices$ | async" style="margin-bottom: 12px">
-    <ion-card style="margin: 0">
-      <ion-card-content style="padding: 8px 12px">
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          "
-        >
-          <div>
-            <span> {{ device.name }} </span>
-          </div>
-          <div style="display: flex; gap: 8px">
-            <ion-button size="small" fill="outline" color="primary"
-              >View Counts</ion-button
-            >
-            <ion-button size="small" fill="outline" color="medium"
-              >Edit</ion-button
-            >
-            <ion-button size="small" fill="outline" color="danger"
-              >Delete</ion-button
-            >
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  </div>
+  <ion-list>
+    <ion-item *ngFor="let device of devices$ | async">
+      <ion-label> {{ device.name }} </ion-label>
+      <ion-button slot="end" size="small" color="primary">
+        View Counts
+      </ion-button>
+      <ion-button slot="end" size="small" color="medium"> Edit </ion-button>
+      <ion-button slot="end" size="small" color="danger"> Delete </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
