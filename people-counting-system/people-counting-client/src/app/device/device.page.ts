@@ -8,8 +8,6 @@ import {
   IonToolbar,
   IonButton,
   IonIcon,
-  IonCard,
-  IonCardContent,
   IonMenuButton,
   IonButtons,
   IonGrid,
@@ -17,11 +15,12 @@ import {
   IonCol,
   IonList,
   IonLabel,
-  IonItem
+  IonItem,
+  IonText
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { addCircle } from 'ionicons/icons';
+import { addCircle, eyeOutline, createOutline, trashOutline } from 'ionicons/icons';
 
 import { Observable, of } from 'rxjs';
 
@@ -37,8 +36,6 @@ import { Observable, of } from 'rxjs';
     IonToolbar,
     IonButton,
     IonIcon,
-    IonCard,
-    IonCardContent,
     IonGrid,
     IonRow,
     IonCol,
@@ -49,13 +46,14 @@ import { Observable, of } from 'rxjs';
     FormsModule,
     IonMenuButton,
     IonButtons,
+    IonText
   ],
 })
 export class DevicePage implements OnInit {
   devices$!: Observable<any[]>;
 
   constructor() {
-    addIcons({ addCircle });
+    addIcons({ addCircle, eyeOutline, createOutline, trashOutline });
   }
 
   ngOnInit() {
