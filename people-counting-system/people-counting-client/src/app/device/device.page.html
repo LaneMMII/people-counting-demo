@@ -19,19 +19,37 @@
     </ion-row>
   </ion-grid>
 
-  <ion-list>
-    <ion-item *ngFor="let device of devices$ | async">
-      <ion-label> {{ device.name }} </ion-label>
-      <ion-button fill="outline" size="default" color="primary">
-        <ion-icon slot="start" name="eye-outline"></ion-icon>
-        <ion-text slot="end">View Counts</ion-text>
-      </ion-button>
-      <ion-button fill="outline" size="default" color="warning"
-        ><ion-icon name="create-outline"></ion-icon
-      ></ion-button>
-      <ion-button fill="outline" size="default" color="danger"
-        ><ion-icon name="trash-outline"></ion-icon
-      ></ion-button>
-    </ion-item>
-  </ion-list>
+  <!-- wrap your list in an ng-container that captures the async result -->
+  <ng-container *ngIf="(devices$ | async) as devices">
+    <!-- if there are devices, render the list -->
+    <ion-list *ngIf="devices.length > 0; else noDevices">
+      <ion-item *ngFor="let device of devices">
+        <ion-label> {{ device.name }} </ion-label>
+        <ion-button fill="outline" size="default" color="primary">
+          <ion-icon slot="start" name="eye-outline"></ion-icon>
+          <ion-text slot="end">View Counts</ion-text>
+        </ion-button>
+        <ion-button fill="outline" size="default" color="warning">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="outline" size="default" color="danger">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <!-- fallback when no devices are returned -->
+  <ng-template #noDevices>
+    <div class="ion-text-center">
+      <h2
+        class="ion-justify-content-center ion-align-items-center"
+        style="display: flex; gap: 0.5rem"
+      >
+        <ion-icon size="large" name="warning-outline"></ion-icon>
+        <span>No Devices Found...</span>
+      </h2>
+      <ion-note>Please add a device to get started.</ion-note>
+    </div>
+  </ng-template>
 </ion-content>
