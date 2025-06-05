@@ -29,7 +29,12 @@
           <ion-icon slot="start" name="eye-outline"></ion-icon>
           <ion-text slot="end">View Counts</ion-text>
         </ion-button>
-        <ion-button fill="outline" size="default" color="warning">
+        <ion-button
+          fill="outline"
+          size="default"
+          color="warning"
+          href="/edit-device/{{ device.id }}"
+        >
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
         <ion-button fill="outline" size="default" color="danger">
