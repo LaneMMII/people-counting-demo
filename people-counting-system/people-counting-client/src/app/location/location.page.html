@@ -7,12 +7,49 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Locations</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <!-- Your code goes here -->
-  <h1>Replace this with your markup</h1>
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-right">
+        <ion-button color="success">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Add Location
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- wrap your list in an ng-container that captures the async result -->
+  <ng-container *ngIf="(locations$ | async) as locations">
+    <!-- if there are locations, render the list -->
+    <ion-list *ngIf="locations.length > 0; else noLocations">
+      <ion-item *ngFor="let location of locations">
+        <ion-label> {{ location.name }} </ion-label>
+        <ion-button fill="outline" size="default" color="primary">
+          <ion-icon slot="start" name="eye-outline"></ion-icon>
+          <ion-text slot="end">View Counts</ion-text>
+        </ion-button>
+        <ion-button fill="outline" size="default" color="warning"
+          ><ion-icon name="create-outline"></ion-icon
+        ></ion-button>
+        <ion-button fill="outline" size="default" color="danger"
+          ><ion-icon name="trash-outline"></ion-icon
+        ></ion-button>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <!-- fallback when no locations are returned -->
+  <ng-template #noLocations>
+    <div class="ion-text-center">
+      <h2
+        class="ion-justify-content-center ion-align-items-center"
+        style="display: flex; gap: 0.5rem"
+      >
+        <ion-icon size="large" name="warning-outline"></ion-icon>
+        <span>No Locations Found...</span>
+      </h2>
+      <ion-note>Please add a location to get started.</ion-note>
+    </div>
+  </ng-template>
 </ion-content>
