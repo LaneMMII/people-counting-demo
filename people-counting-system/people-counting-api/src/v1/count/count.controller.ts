@@ -1,5 +1,8 @@
 import z from 'zod';
-import { getAggregatedCountByDevice, getAggregatedCountByLocation } from './count.service';
+import {
+  getAggregatedCountByDevice,
+  getAggregatedCountByLocation,
+} from './count.service';
 
 const AGGREGATES = ['minute', 'hour', 'day', 'week'] as const;
 
@@ -26,7 +29,9 @@ export const getAggregatedCountController = async (ctx: any) => {
 
   if (!parseResult.success) {
     ctx.status = 400;
-    ctx.body = { error: parseResult.error.errors.map(e => e.message).join(', ') };
+    ctx.body = {
+      error: parseResult.error.errors.map((e) => e.message).join(', '),
+    };
     return;
   }
 
@@ -38,20 +43,20 @@ export const getAggregatedCountController = async (ctx: any) => {
     if (deviceId !== undefined) {
       result = await getAggregatedCountByDevice(
         deviceId,
-        start || new Date().toISOString(),
+        start!,
         end || new Date().toISOString(),
-        agg
+        agg,
       );
     } else if (locationId !== undefined) {
       result = await getAggregatedCountByLocation(
         locationId,
-        start || new Date().toISOString(),
+        start!,
         end || new Date().toISOString(),
-        agg
+        agg,
       );
     } else {
       ctx.status = 400;
-      ctx.body = { error: "Either deviceId or locationId must be provided" };
+      ctx.body = { error: 'Either deviceId or locationId must be provided' };
       return;
     }
 
