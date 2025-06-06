@@ -76,23 +76,7 @@ export class DeviceCountsPage implements OnInit {
 
   // Sample chart options, needs replaced later with actual data
 chartOptions = {
-  data: [
-    { label: 'A', value: 5 },
-    { label: 'B', value: 10 },
-    { label: 'C', value: 7 }
-  ],
-  series: [
-    {
-      type: 'line',
-      xKey: 'label',
-      yKey: 'value',
-      xName: 'Label',
-      yName: 'Value'
-    }
-  ],
-  title: {
-    text: 'Device Counts',
-  }
+
 };
   constructor() { 
     addIcons({
