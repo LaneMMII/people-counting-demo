@@ -31,5 +31,14 @@ export const routes: Routes = [
     path: 'edit-location/:id',
     loadComponent: () => import('./edit-location/edit-location.page').then( m => m.EditLocationPage)
   },
+  {
+    path: 'device-counts/:id',
+    loadComponent: () => import('./device-counts/device-counts.page').then( m => m.DeviceCountsPage)
+  },
+  {
+    path: 'location-counts/:id',
+    loadComponent: () => import('./location-counts/location-counts.page').then( m => m.LocationCountsPage)
+  },
+
 
 ];

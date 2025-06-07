@@ -25,7 +25,12 @@
     <ion-list *ngIf="devices.length > 0; else noDevices">
       <ion-item *ngFor="let device of devices">
         <ion-label> {{ device.name }} </ion-label>
-        <ion-button fill="outline" size="default" color="primary">
+        <ion-button
+          fill="outline"
+          size="default"
+          color="primary"
+          href="/device-counts/{{ device.id }}"
+        >
           <ion-icon slot="start" name="eye-outline"></ion-icon>
           <ion-text slot="end">View Counts</ion-text>
         </ion-button>
