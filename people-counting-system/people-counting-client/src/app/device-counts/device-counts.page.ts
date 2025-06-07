@@ -29,7 +29,9 @@ import {
   IonSelectOption,
 } from '@ionic/angular/standalone';
 
-import { refreshOutline } from 'ionicons/icons';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { refreshOutline, arrowBack } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 @Component({
@@ -68,6 +70,8 @@ import { addIcons } from 'ionicons';
 export class DeviceCountsPage implements OnInit {
   startDate: string = new Date().toISOString();
   endDate: string = new Date().toISOString();
+  deviceId: number | undefined;
+  deviceName: string | undefined;
 
   aggregate: 'minute' | 'hour' | 'day' | 'week' = 'minute';
 
@@ -78,11 +82,23 @@ export class DeviceCountsPage implements OnInit {
 chartOptions = {
 
 };
-  constructor() { 
+  constructor(private route: ActivatedRoute, private router: Router) { 
     addIcons({
-      refreshOutline
+      refreshOutline,
+      arrowBack
     });
   }
 
-  ngOnInit() {}
+  onRefresh() {
+    console.log('Refreshing chart with:');
+    console.log('Start Date:', this.startDate);
+    console.log('End Date:', this.endDate);
+    console.log('Aggregate:', this.aggregate);
+  }
+  ngOnInit() {
+    this.deviceId = Number(this.route.snapshot.paramMap.get('id'));
+    console.log('Loaded counts for device ID:', this.deviceId);
+
+    this.deviceName = `Device #${this.deviceId}`;  //This will need changed when service is implemented
+  }
 }
