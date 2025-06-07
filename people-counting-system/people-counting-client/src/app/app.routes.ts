@@ -36,7 +36,7 @@ export const routes: Routes = [
     loadComponent: () => import('./device-counts/device-counts.page').then( m => m.DeviceCountsPage)
   },
   {
-    path: 'location-counts',
+    path: 'location-counts/:id',
     loadComponent: () => import('./location-counts/location-counts.page').then( m => m.LocationCountsPage)
   },
 
