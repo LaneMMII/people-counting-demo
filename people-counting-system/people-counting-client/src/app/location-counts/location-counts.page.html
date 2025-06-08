@@ -18,61 +18,55 @@
       <ion-grid>
         <ion-row>
           <ion-col size="12" class="ion-margin-bottom">
-            <ion-button color="warning" fill="solid" href="/location">
+            <ion-button fill="solid" href="/location">
               <ion-icon slot="start" name="arrow-back"></ion-icon>
               Back
             </ion-button>
           </ion-col>
-          <ion-col size="9">
+        </ion-row>
+        <ion-row>
+          <ion-col size="8">
             <ag-charts
               [options]="chartOptions"
               style="width: 100%; height: 400px"
             ></ag-charts>
           </ion-col>
-
-          <ion-col size="3">
-            <ion-list>
-              <ion-item
-                class="ion-margin-bottom"
-                (click)="showStartPicker = !showStartPicker"
-                button
-              >
-                <ion-label>Start Date</ion-label>
-                <ion-text>{{ startDate | date: 'mediumDate' }}</ion-text>
+          <ion-col size="4">
+            <ion-list lines="none">
+              <ion-item>
+                <ion-label>Start</ion-label>
+                <ion-datetime-button
+                  datetime="startDatetime"
+                ></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime
+                      [(ngModel)]="startDate"
+                      id="startDatetime"
+                    ></ion-datetime>
+                  </ng-template>
+                </ion-modal>
               </ion-item>
-
-              <ion-item *ngIf="showStartPicker" class="ion-margin-bottom">
-                <ion-datetime
-                  [(ngModel)]="startDate"
-                  name="startDate"
-                  presentation="date"
-                  (ionChange)="showStartPicker = false"
-                ></ion-datetime>
+              <ion-item>
+                <ion-label>End</ion-label>
+                <ion-datetime-button
+                  datetime="endDatetime"
+                ></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime
+                      [(ngModel)]="endDate"
+                      id="endDatetime"
+                    ></ion-datetime>
+                  </ng-template>
+                </ion-modal>
               </ion-item>
-
-              <ion-item
-                class="ion-margin-bottom"
-                (click)="showEndPicker = !showEndPicker"
-                button
-              >
-                <ion-label>End Date</ion-label>
-                <ion-text>{{ endDate | date: 'mediumDate' }}</ion-text>
-              </ion-item>
-
-              <ion-item *ngIf="showEndPicker" class="ion-margin-bottom">
-                <ion-datetime
-                  [(ngModel)]="endDate"
-                  name="endDate"
-                  presentation="date"
-                  (ionChange)="showEndPicker = false"
-                ></ion-datetime>
-              </ion-item>
-
-              <ion-item class="ion-margin-bottom">
+              <ion-item>
                 <ion-select
                   [(ngModel)]="aggregate"
                   name="aggregate"
                   interface="popover"
+                  label="Aggregate"
                 >
                   <ion-select-option value="minute">Minute</ion-select-option>
                   <ion-select-option value="hour">Hour</ion-select-option>
@@ -80,17 +74,15 @@
                   <ion-select-option value="week">Week</ion-select-option>
                 </ion-select>
               </ion-item>
-
-              <ion-item lines="none" class="ion-margin-top">
-                <ion-button
-                  expand="block"
-                  color="success"
-                  (click)="onRefresh()"
-                >
-                  Refresh
-                  <ion-icon slot="end" name="refresh-outline"></ion-icon>
-                </ion-button>
-              </ion-item>
+              <ion-button
+                size="default"
+                expand="full"
+                color="success"
+                (click)="onRefresh()"
+              >
+                <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                Refresh
+              </ion-button>
             </ion-list>
           </ion-col>
         </ion-row>

@@ -6,6 +6,8 @@ import { AgCharts } from 'ag-charts-angular';
 
 import { 
   IonButton, 
+  IonDatetimeButton,
+  IonModal,
   IonContent, 
   IonHeader, 
   IonTitle, 
@@ -25,7 +27,6 @@ import {
   IonSelect,
   IonIcon,
   IonDatetime,
-  IonText, 
   IonSelectOption,
 } from '@ionic/angular/standalone';
 
@@ -41,8 +42,10 @@ import { addIcons } from 'ionicons';
   standalone: true,
   imports: [
     AgCharts,
+    IonDatetimeButton,
     IonContent, 
     IonHeader, 
+    IonModal,
     IonTitle, 
     IonToolbar, 
     CommonModule, 
@@ -63,7 +66,6 @@ import { addIcons } from 'ionicons';
     IonSelect,
     IonIcon,
     IonDatetime,
-    IonText,
     IonSelectOption
   ],
 })

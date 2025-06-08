@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { AgCharts } from 'ag-charts-angular';
 
 import { 
+  IonDatetimeButton,
+  IonModal,
   IonButton, 
   IonContent, 
   IonHeader, 
@@ -25,7 +27,6 @@ import {
   IonSelect,
   IonIcon,
   IonDatetime,
-  IonText, 
   IonSelectOption,
 } from '@ionic/angular/standalone';
 
@@ -40,6 +41,8 @@ import { addIcons } from 'ionicons';
   styleUrls: ['./device-counts.page.scss'],
   standalone: true,
   imports: [
+    IonDatetimeButton,
+    IonModal,
     AgCharts,
     IonContent, 
     IonHeader, 
@@ -63,7 +66,6 @@ import { addIcons } from 'ionicons';
     IonSelect,
     IonIcon,
     IonDatetime,
-    IonText,
     IonSelectOption
   ],
 })

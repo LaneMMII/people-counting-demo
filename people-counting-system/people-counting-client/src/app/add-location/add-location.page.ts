@@ -18,9 +18,6 @@ import {
   IonToolbar,
   IonCardTitle,
   IonInput,
-  IonSelect,
-  IonSelectOption,
-  IonCheckbox,
   IonCardContent,
   IonButton,
   IonIcon,
@@ -29,13 +26,10 @@ import {
   IonCol,
   IonItem,
   IonList,
-  IonLabel,
   IonMenuButton,
   IonButtons,
-  IonText,
   IonCard,
   IonCardHeader,
-  IonNote
   } from '@ionic/angular/standalone';
 import { add } from 'ionicons/icons';
 
@@ -48,9 +42,6 @@ import { add } from 'ionicons/icons';
       IonContent, 
       IonCardTitle,
       IonInput,
-      IonSelect,
-      IonSelectOption,
-      IonCheckbox,
       IonHeader, 
       IonTitle, 
       IonToolbar, 
@@ -64,13 +55,11 @@ import { add } from 'ionicons/icons';
       IonCol,
       IonItem,
       IonList,
-      IonLabel,
       IonMenuButton,
       IonButtons,
-      IonText,
       IonCard,
       IonCardHeader,
-      IonNote]
+    ]
 })
 export class AddLocationPage implements OnInit {
   location = {name: '', address: ''}

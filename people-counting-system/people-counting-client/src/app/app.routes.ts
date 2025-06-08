@@ -15,29 +15,41 @@ export const routes: Routes = [
     path: 'location',
     loadComponent: () => import('./location/location.page').then( m => m.LocationPage)
   },
-  {
-    path: 'add-device',
-    loadComponent: () => import('./add-device/add-device.page').then( m => m.AddDevicePage)
+{
+    path: 'device/add',
+    loadComponent: () =>
+      import('./add-device/add-device.page').then((m) => m.AddDevicePage),
   },
   {
-    path: 'add-location',
-    loadComponent: () => import('./add-location/add-location.page').then( m => m.AddLocationPage)
+    path: 'location/add',
+    loadComponent: () =>
+      import('./add-location/add-location.page').then((m) => m.AddLocationPage),
   },
   {
-    path: 'edit-device/:id',
-    loadComponent: () => import('./edit-device/edit-device.page').then( m => m.EditDevicePage)
+    path: 'device/:id/edit',
+    loadComponent: () =>
+      import('./edit-device/edit-device.page').then((m) => m.EditDevicePage),
   },
   {
-    path: 'edit-location/:id',
-    loadComponent: () => import('./edit-location/edit-location.page').then( m => m.EditLocationPage)
+    path: 'location/:id/edit',
+    loadComponent: () =>
+      import('./edit-location/edit-location.page').then(
+        (m) => m.EditLocationPage
+      ),
   },
   {
-    path: 'device-counts/:id',
-    loadComponent: () => import('./device-counts/device-counts.page').then( m => m.DeviceCountsPage)
+    path: 'device/:id/count',
+    loadComponent: () =>
+      import('./device-counts/device-counts.page').then(
+        (m) => m.DeviceCountsPage
+      ),
   },
   {
-    path: 'location-counts/:id',
-    loadComponent: () => import('./location-counts/location-counts.page').then( m => m.LocationCountsPage)
+    path: 'location/:id/count',
+    loadComponent: () =>
+      import('./location-counts/location-counts.page').then(
+        (m) => m.LocationCountsPage
+      ),
   },
 
 

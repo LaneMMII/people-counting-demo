@@ -27,13 +27,10 @@ import {
   IonCol,
   IonItem,
   IonList,
-  IonLabel,
   IonMenuButton,
   IonButtons,
-  IonText,
   IonCard,
   IonCardHeader,
-  IonNote
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -58,13 +55,10 @@ import {
     IonCol,
     IonItem,
     IonList,
-    IonLabel,
     IonMenuButton,
     IonButtons,
-    IonText,
     IonCard,
     IonCardHeader,
-    IonNote
   ]
 })
 export class EditLocationPage implements OnInit {

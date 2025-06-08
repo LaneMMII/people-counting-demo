@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AgCharts } from 'ag-charts-angular';
 import {
   IonApp,
   IonSplitPane,
@@ -33,7 +32,6 @@ import {
     RouterLinkActive,
     IonApp,
     IonSplitPane,
-    AgCharts,
     IonMenu,
     IonContent,
     IonList,

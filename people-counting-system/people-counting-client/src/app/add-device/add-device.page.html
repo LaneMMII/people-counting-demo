@@ -10,61 +10,64 @@
 <ion-content class="ion-padding">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" size-md="6" offset-md="3">
+      <ion-col size-sm="12" size-lg="8" offset-lg="2">
         <ion-card>
           <ion-card-header>
             <ion-card-title class="ion-text-center">Add Device</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <form #deviceForm="ngForm" (ngSubmit)="addDevice()">
-              <ion-item>
-                <ion-label position="stacked">Device Name</ion-label>
-                <ion-input
-                  [(ngModel)]="device.name"
-                  name="name"
-                  required
-                  #name="ngModel"
-                  placeholder="Required"
-                ></ion-input>
-              </ion-item>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-input
+                    [(ngModel)]="device.name"
+                    name="name"
+                    required
+                    #name="ngModel"
+                    errorText="Device name is required"
+                    label="Device Name"
+                    class="ion-text-end"
+                  ></ion-input>
+                </ion-item>
 
-              <ion-item>
-                <ion-label position="stacked">Device Location</ion-label>
-                <ion-select
-                  [(ngModel)]="device.location"
-                  name="location"
-                  required
-                  #location="ngModel"
-                  placeholder="Required"
-                >
-                  <ion-select-option
-                    *ngFor="let loc of locations$ | async"
-                    [value]="loc.id"
+                <ion-item>
+                  <ion-select
+                    [(ngModel)]="device.location"
+                    name="location"
+                    required
+                    #location="ngModel"
+                    label="Device Location"
+                    errorText="Location is required"
+                    placeholder="Select Location"
                   >
-                    {{ loc.name }} - {{ loc.address }}
-                  </ion-select-option>
-                </ion-select>
-              </ion-item>
+                    <ion-select-option
+                      *ngFor="let loc of locations$ | async"
+                      [value]="loc.id"
+                    >
+                      {{ loc.name }} - {{ loc.address }}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-checkbox
+                    slot="end"
+                    [(ngModel)]="device.active"
+                    name="active"
+                    >Active</ion-checkbox
+                  >
+                </ion-item>
 
-              <ion-item lines="none">
-                <ion-label>Active</ion-label>
-                <ion-checkbox
-                  slot="end"
-                  [(ngModel)]="device.active"
-                  name="active"
-                ></ion-checkbox>
-              </ion-item>
-
-              <ion-button
-                expand="block"
-                type="submit"
-                [color]="deviceForm.valid ? 'success' : 'medium'"
-                class="ion-margin-top"
-                [disabled]="deviceForm.invalid"
-              >
-                <ion-icon slot="start" name="add-circle"></ion-icon>
-                Add Device
-              </ion-button>
+                <ion-button
+                  expand="block"
+                  type="submit"
+                  [color]="deviceForm.valid ? 'success' : 'medium'"
+                  class="ion-margin-top"
+                  [disabled]="deviceForm.invalid"
+                >
+                  <ion-icon slot="start" name="add-circle"></ion-icon>
+                  Add Device
+                </ion-button>
+              </ion-list>
             </form>
           </ion-card-content>
         </ion-card>

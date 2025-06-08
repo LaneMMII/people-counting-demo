@@ -15,10 +15,7 @@ import {
   IonRow,
   IonCol,
   IonList,
-  IonLabel,
   IonItem,
-  IonText,
-  IonNote,
   IonCardHeader,
   IonCardContent,
   IonCardTitle,
@@ -66,13 +63,11 @@ import { Observable, of } from 'rxjs';
     IonCol,
     IonItem,
     IonList,
-    IonLabel,
     IonMenuButton,
     IonButtons,
-    IonText,
     IonCard,
     IonCardHeader,
-    IonNote]
+  ]
 })
 
 export class AddDevicePage implements OnInit {
