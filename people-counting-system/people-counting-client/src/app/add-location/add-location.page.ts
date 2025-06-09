@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { LocationService, Location } from '../services/location.service';
+import { Router } from '@angular/router';
+
 import { addIcons } from 'ionicons';
 import {
   addCircle,
@@ -62,9 +65,9 @@ import { add } from 'ionicons/icons';
     ]
 })
 export class AddLocationPage implements OnInit {
-  location = {name: '', address: ''}
+  location: Partial<Location> = { name: '', address: '' };
 
-  constructor() {  
+  constructor(private locationService: LocationService, private router: Router) {  
     addIcons({
       addCircle,
       eyeOutline,
@@ -78,8 +81,14 @@ export class AddLocationPage implements OnInit {
   }
 
   addLocation() {
-  //TODO: Implement the logic to add a new location
-  console.log("Add Location button clicked");
+    if (!this.location.name || !this.location.address) return;
+    this.locationService.createLocation(this.location as Location).subscribe({
+      next: () => this.router.navigate(['/location']),
+      error: err => {
+        // TODO: Show error to user
+        console.error('Failed to add location', err);
+      }
+    });
   }
 
 }

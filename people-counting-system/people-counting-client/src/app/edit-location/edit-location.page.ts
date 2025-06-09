@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { LocationService, Location } from '../services/location.service';
+import { Router } from '@angular/router';
+
 import { addIcons } from 'ionicons';
 import {
   addCircle,
@@ -62,20 +65,15 @@ import {
   ]
 })
 export class EditLocationPage implements OnInit {
-  location = { name: '', address: '' };
+  location: Partial<Location> = { name: '', address: '' };
+  locationId!: number;
 
-  // Mock locations array (replace with service in real app)
-  private locations = [
-    { id: 1, name: 'American Eagle', address: '123 Mall St' },
-    { id: 2, name: 'Woods Grocery', address: '456 Market Ave' },
-    { id: 3, name: 'Hot Topic', address: '789 Fashion Blvd' },
-    { id: 4, name: 'Game Stop', address: '101 Gaming Ln' },
-    { id: 5, name: 'Best Buy', address: '202 Tech Rd' },
-    { id: 6, name: 'Target', address: '303 Retail Dr' },
-  ];
-
-  constructor(private route: ActivatedRoute) {  
-    addIcons({
+  constructor(    
+    private locationService: LocationService,
+    private route: ActivatedRoute,
+    private router: Router) {  
+    
+      addIcons({
       addCircle,
       eyeOutline,
       createOutline,
@@ -84,16 +82,25 @@ export class EditLocationPage implements OnInit {
     }); 
   }
 
-  ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    const found = this.locations.find(loc => loc.id === id);
-    if (found) {
-      this.location = { ...found };
-    }
+ ngOnInit() {
+    this.locationId = Number(this.route.snapshot.paramMap.get('id'));
+    this.locationService.getLocation(this.locationId).subscribe({
+      next: loc => this.location = loc,
+      error: err => {
+        // TODO: Show error to user
+        console.error('Failed to load location', err);
+      }
+    });
   }
 
   updateLocation() {
-    // TODO: Implement the logic to update the location
-    console.log("Location updated", this.location);
+    if (!this.location.name || !this.location.address) return;
+    this.locationService.updateLocation(this.locationId, this.location as Location).subscribe({
+      next: () => this.router.navigate(['/location']),
+      error: err => {
+        // TODO: Show error to user
+        console.error('Failed to update location', err);
+      }
+    });
   }
 }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DeviceService, Device } from '../services/device.service';
 import { Router } from '@angular/router';
+import { LocationService } from '../services/location.service';
 
 import { 
   IonContent,
@@ -80,7 +81,8 @@ export class EditDevicePage implements OnInit {
   constructor(
     private deviceService: DeviceService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private locationService: LocationService
   ) {
     addIcons({
       addCircle,
@@ -92,14 +94,8 @@ export class EditDevicePage implements OnInit {
   }
 
   ngOnInit() {
-    this.locations$ = of([
-      { id: 1, name: 'American Eagle', address: '123 Mall St' },
-      { id: 2, name: 'Woods Grocery', address: '456 Market Ave' },
-      { id: 3, name: 'Hot Topic', address: '789 Fashion Blvd' },
-      { id: 4, name: 'Game Stop', address: '101 Gaming Ln' },
-      { id: 5, name: 'Best Buy', address: '202 Tech Rd' },
-      { id: 6, name: 'Target', address: '303 Retail Dr' },
-    ]);
+    this.locations$ = this.locationService.getLocations();
+
 
     this.deviceId = Number(this.route.snapshot.paramMap.get('id'));
     this.deviceService.getDevice(this.deviceId).subscribe({
