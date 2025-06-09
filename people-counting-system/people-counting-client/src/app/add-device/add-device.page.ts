@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { DeviceService, Device } from '../services/device.service';
+import { Router } from '@angular/router';
+
 import {
   IonContent,
   IonHeader,
@@ -71,10 +74,13 @@ import { Observable, of } from 'rxjs';
 })
 
 export class AddDevicePage implements OnInit {
-  device = { name: '', location: '', active :false };
+  device: Partial<Device> = { name: '', locationId: 0, active: false };
   locations$!: Observable<any[]>; 
 
-  constructor() {
+  constructor(
+    private deviceService: DeviceService,
+    private router: Router
+  ) {
   addIcons({
     addCircle,
     eyeOutline,
@@ -138,7 +144,14 @@ ngOnInit() {
   }
 
   addDevice() {
-    //TODO: Implement the logic to add a new device
-    console.log("Add Device button clicked");
+    // Ensure locationId is a number
+    if (!this.device.name || !this.device.locationId) return;
+    this.deviceService.createDevice(this.device as Device).subscribe({
+      next: () => this.router.navigate(['/device']),
+      error: err => {
+        // TODO: Show error to user
+        console.error('Failed to add device', err);
+      }
+    });
   }
 }

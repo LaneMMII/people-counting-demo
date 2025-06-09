@@ -42,7 +42,12 @@
         >
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
-        <ion-button fill="outline" size="default" color="danger">
+        <ion-button
+          fill="outline"
+          size="default"
+          color="danger"
+          (click)="deleteDevice(device.id)"
+        >
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
       </ion-item>

@@ -74,4 +74,16 @@ export class DevicePage implements OnInit {
   ngOnInit() {
     this.devices$ = this.deviceService.getDevices();
   }
+
+  deleteDevice(id?: number) {
+    if (id === undefined) return;
+    this.deviceService.deleteDevice(id).subscribe({
+      next: () => {
+        this.devices$ = this.deviceService.getDevices();
+      },
+      error: err => {
+        console.error('Failed to delete device', err);
+      }
+    });
+}
 }

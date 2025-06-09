@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { DeviceService, Device } from '../services/device.service';
+import { Router } from '@angular/router';
+
 import { 
   IonContent,
   IonHeader,
@@ -70,104 +73,15 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class EditDevicePage implements OnInit {
-  device = { name: '', location: 0, active: false };
+  device: Partial<Device> = { name: '', locationId: 0, active: false };
   locations$!: Observable<any[]>;
+  deviceId!: number;
 
-  // Mock devices and locations need updated to use actual data from db
-  private devices = [
-    {
-      id: 1,
-      name: 'American Eagle East Door',
-      locationId: 1,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 2,
-      name: 'American Eagle West Door',
-      locationId: 1,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 3,
-      name: 'Woods Grocery North Door',
-      locationId: 2,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 4,
-      name: 'Woods Grocery South Door',
-      locationId: 2,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 5,
-      name: 'Hot Topic',
-      locationId: 3,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 6,
-      name: 'Game Stop',
-      locationId: 4,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 7,
-      name: 'Best Buy East Door',
-      locationId: 5,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 8,
-      name: 'Best Buy West Door',
-      locationId: 5,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 9,
-      name: 'Target East Door',
-      locationId: 6,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-    {
-      id: 10,
-      name: 'Target West Door',
-      locationId: 6,
-      active: true,
-      created: '2025-06-01T01:19:25.296Z',
-      updated: '2025-06-01T01:19:25.296Z',
-      deleted: null,
-    },
-  ];
-
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private deviceService: DeviceService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     addIcons({
       addCircle,
       eyeOutline,
@@ -187,19 +101,24 @@ export class EditDevicePage implements OnInit {
       { id: 6, name: 'Target', address: '303 Retail Dr' },
     ]);
 
-const id = Number(this.route.snapshot.paramMap.get('id'));
-    const found = this.devices.find(dev => dev.id === id);
-    if (found) {
-      this.device = {
-        name: found.name,
-        location: found.locationId,
-        active: found.active
-      };
-    }
+    this.deviceId = Number(this.route.snapshot.paramMap.get('id'));
+    this.deviceService.getDevice(this.deviceId).subscribe({
+      next: dev => this.device = dev,
+      error: err => {
+        // TODO: Show error to user
+        console.error('Failed to load device', err);
+      }
+    });
   }
 
   updateDevice() {
-    // Logic to update the device
-    console.log('Device updated', this.device);
+    if (!this.device.name || !this.device.locationId) return;
+    this.deviceService.updateDevice(this.deviceId, this.device as Device).subscribe({
+      next: () => this.router.navigate(['/device']),
+      error: err => {
+        // TODO: Show error to user
+        console.error('Failed to update device', err);
+      }
+    });
   }
 }

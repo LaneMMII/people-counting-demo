@@ -18,6 +18,9 @@ importers:
 
   people-counting-system/people-counting-api:
     dependencies:
+      '@koa/cors':
+        specifier: ^5.0.0
+        version: 5.0.0
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
@@ -46,6 +49,9 @@ importers:
       '@types/koa-router':
         specifier: ^7.4.8
         version: 7.4.8
+      '@types/koa__cors':
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/node':
         specifier: ^22.15.19
         version: 22.15.19
@@ -1469,6 +1475,10 @@ packages:
     peerDependencies:
       tslib: '2'
 
+  '@koa/cors@5.0.0':
+    resolution: {integrity: sha512-x/iUDjcS90W69PryLDIMgFyV21YLTnG9zOpPXS7Bkt2b8AsY3zZsIpOLBkYr9fBcF3HbkKaER5hOBZLfpLgYNw==}
+    engines: {node: '>= 14.0.0'}
+
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
 
@@ -2059,6 +2069,9 @@ packages:
 
   '@types/koa@2.15.0':
     resolution: {integrity: sha512-7QFsywoE5URbuVnG3loe03QXuGajrnotr3gQkXcEBShORai23MePfFYdhz90FEtBBpkyIYQbVD+evKtloCgX3g==}
+
+  '@types/koa__cors@5.0.0':
+    resolution: {integrity: sha512-LCk/n25Obq5qlernGOK/2LUwa/2YJb2lxHUkkvYFDOpLXlVI6tKcdfCHRBQnOY4LwH6el5WOLs6PD/a8Uzau6g==}
 
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
@@ -7214,6 +7227,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@koa/cors@5.0.0':
+    dependencies:
+      vary: 1.1.2
+
   '@leichtgewicht/ip-codec@2.0.5': {}
 
   '@listr2/prompt-adapter-inquirer@2.0.18(@inquirer/prompts@7.3.2(@types/node@22.15.19))':
@@ -7733,6 +7750,10 @@ snapshots:
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
       '@types/node': 22.15.19
+
+  '@types/koa__cors@5.0.0':
+    dependencies:
+      '@types/koa': 2.15.0
 
   '@types/mime@1.3.5': {}
 
