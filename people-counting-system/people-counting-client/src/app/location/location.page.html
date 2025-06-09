@@ -11,7 +11,7 @@
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-right">
-        <ion-button color="success">
+        <ion-button color="success" href="/location/add">
           <ion-icon slot="start" name="add-circle"></ion-icon>
           Add Location
         </ion-button>
@@ -25,11 +25,20 @@
     <ion-list *ngIf="locations.length > 0; else noLocations">
       <ion-item *ngFor="let location of locations">
         <ion-label> {{ location.name }} </ion-label>
-        <ion-button fill="outline" size="default" color="primary">
+        <ion-button
+          fill="outline"
+          size="default"
+          color="primary"
+          href="/location/{{ location.id }}/count"
+        >
           <ion-icon slot="start" name="eye-outline"></ion-icon>
           <ion-text slot="end">View Counts</ion-text>
         </ion-button>
-        <ion-button fill="outline" size="default" color="warning"
+        <ion-button
+          fill="outline"
+          size="default"
+          color="warning"
+          href="/location/{{ location.id }}/edit"
           ><ion-icon name="create-outline"></ion-icon
         ></ion-button>
         <ion-button fill="outline" size="default" color="danger"
