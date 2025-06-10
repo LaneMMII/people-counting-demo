@@ -35,24 +35,28 @@
             <ion-list lines="none">
               <ion-item>
                 <ion-label>Start</ion-label>
-                <ion-datetime-button datetime="datetime"></ion-datetime-button>
+                <ion-datetime-button
+                  datetime="startDatetime"
+                ></ion-datetime-button>
                 <ion-modal [keepContentsMounted]="true">
                   <ng-template>
                     <ion-datetime
                       [(ngModel)]="startDate"
-                      id="datetime"
+                      id="startDatetime"
                     ></ion-datetime>
                   </ng-template>
                 </ion-modal>
               </ion-item>
               <ion-item>
                 <ion-label>End</ion-label>
-                <ion-datetime-button datetime="datetime"></ion-datetime-button>
+                <ion-datetime-button
+                  datetime="endDatetime"
+                ></ion-datetime-button>
                 <ion-modal [keepContentsMounted]="true">
                   <ng-template>
                     <ion-datetime
                       [(ngModel)]="endDate"
-                      id="datetime"
+                      id="endDatetime"
                     ></ion-datetime>
                   </ng-template>
                 </ion-modal>
