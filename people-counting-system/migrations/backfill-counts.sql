@@ -37,11 +37,11 @@ BEGIN
         SELECT
             "id" AS device_id,
             "name" AS device_name -- Included for potential logging, not used in insert
-        FROM "Device"
+        FROM "device"
         WHERE "active" = TRUE AND "deleted" IS NULL
     )
     -- 3. Insert into Count table
-    INSERT INTO "Count" ("sensorId", "timestamp", "in", "out")
+    INSERT INTO "count" ("deviceId", "timestamp", "in", "out")
     SELECT
         ad.device_id,
         ts.minute_timestamp,
