@@ -37,6 +37,12 @@ import { CountService, CountResponse } from '../services/count.service';
 import { refreshOutline, arrowBack } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
+import { map, catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { Device } from '../services/device.service';
+
+type CountAggregate = 'minute' | 'hour' | 'day' | 'week';
+
 @Component({
   selector: 'app-device-counts',
   templateUrl: './device-counts.page.html',
@@ -71,13 +77,14 @@ import { addIcons } from 'ionicons';
     IonSelectOption
   ],
 })
-export class DeviceCountsPage implements OnInit {
-  startDate: string = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days ago
-  endDate: string = new Date().toISOString(); // now
-  deviceId: number | undefined;
-  deviceName: string | undefined;
 
-  aggregate: 'minute' | 'hour' | 'day' | 'week' = 'hour';
+export class DeviceCountsPage implements OnInit {
+  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString(); // beginning of today
+  endDate: string = new Date().toISOString(); // now
+  deviceId: number
+  deviceName: string | undefined;
+  aggregate: CountAggregate = 'hour'; // default aggregation
+  device$!: Observable<Device>;
 
   showStartPicker = false;
   showEndPicker = false;
@@ -86,64 +93,88 @@ export class DeviceCountsPage implements OnInit {
   chartOptions: any = {};
   errorMsg: string | null = null;
 
-  constructor(
-    private route: ActivatedRoute, 
-    private countService: CountService,
-    private deviceService: DeviceService,) { 
-    addIcons({
-      refreshOutline,
-      arrowBack
-    });
-  }
-  onRefresh() {
-    if (!this.deviceId) return;
-    this.countService.getCountsByDevice(
-      this.deviceId,
-      this.startDate,
-      this.endDate,
-      this.aggregate
-    ).subscribe({
-      next: (resArr) => {
-        const res = Array.isArray(resArr) ? resArr[0] : resArr;
-        this.errorMsg = null;
-        this.chartOptions = this.mapCountsToChart(res);
-      },
-      error: err => {
-        this.errorMsg = 'Failed to load counts';
-        this.chartOptions = {};
-      }
-    });
-  }
-  
-mapCountsToChart(res: CountResponse) {
-    if (!res || !Array.isArray(res.counts)) {
-      return {
-        data: [],
-        series: [{ type: 'line', xKey: 'x', yKey: 'y', yName: 'Count' }],
-        axes: [
-          { type: 'time', position: 'bottom', title: { text: 'Time' } },
-          { type: 'number', position: 'left', title: { text: 'Count' } }
-        ]
-      };
-    }
-    return {
-      data: res.counts.map(c => ({ x: new Date(c.timestamp), y: c.count })),
-      series: [{ type: 'line', xKey: 'x', yKey: 'y', yName: 'Count' }],
-      axes: [
-        { type: 'time', position: 'bottom', title: { text: 'Time' } },
-        { type: 'number', position: 'left', title: { text: 'Count' } }
-      ]
-    };
+  constructor(  
+    private route: ActivatedRoute,  
+    private countService: CountService,  
+    private deviceService: DeviceService,  
+    private router: Router  
+  ) {  
+    addIcons({  
+      refreshOutline,  
+      arrowBack,  
+    });  
+
+    this.deviceId = Number(this.route.snapshot.paramMap.get('id'));
+    if (isNaN(this.deviceId)) {
+    this.router.navigate(['/device']);
+    }  
   }
 
-  ngOnInit() {
-  this.deviceId = Number(this.route.snapshot.paramMap.get('id'));
-  this.deviceName = this.route.snapshot.queryParamMap.get('name') || undefined;
-  if (!this.deviceName && this.deviceId) {
-    this.deviceService.getDevice(this.deviceId).subscribe(device => {
-      this.deviceName = device?.name || 'Unknown';
-    });
+onRefresh() {  
+    this.countService  
+      .getCountsByDevice(  
+        this.deviceId,  
+        this.startDate,  
+        this.endDate,  
+        this.aggregate  
+      )  
+      .pipe(  
+        map((res) => this.mapCountsToChart(res)),  
+        catchError((error) => {  
+          console.error(error);  
+          return of({});  
+        })  
+      )  
+      .subscribe((chartOptions) => {  
+        this.chartOptions = chartOptions;  
+      });  
+  }  
+  
+mapCountsToChart(res: CountResponse) {
+  if (!res || !Array.isArray(res.counts)) {
+    return {
+    data: [],
+    series: [
+      { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
+      { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' }
+    ],
+    axes: [
+      { type: 'time', position: 'bottom', title: { text: 'Time' } },
+      { type: 'number', position: 'left', title: { text: 'Count' } }
+    ]
+    };
   }
-   this.onRefresh();
+  return {
+    data: res.counts.map(c => ({
+    x: new Date(c.timestamp),
+    in: c.in,
+    out: c.out
+    })),
+    series: [
+    { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
+    { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' }
+    ],
+    axes: [
+    { type: 'time', position: 'bottom', title: { text: 'Time' } },
+    { type: 'number', position: 'left', title: { text: 'Count' } }
+    ]
+  };
   }
+
+ngOnInit() {  
+    this.device$ = this.deviceService.getDevice(this.deviceId).pipe(  
+      catchError((error) => {  
+        // TODO: display error message to user  
+        console.error('Failed to load device:', error);  
+        this.router.navigate(['/device']);  
+        return of({} as Device);  
+      })  
+    );  
+
+    this.device$.subscribe(device => {
+    this.deviceName = device?.name || 'Unknown';
+  });
+
+    this.onRefresh();  
+  }  
 }

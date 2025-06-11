@@ -15,6 +15,9 @@ import {
   warningOutline
 } from 'ionicons/icons';
 
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+
 import { 
   IonContent, 
   IonHeader, 
@@ -65,7 +68,7 @@ import {
   ]
 })
 export class EditLocationPage implements OnInit {
-  location: Partial<Location> = { name: '', address: '' };
+  location: Partial<Location> = { name: undefined, address: undefined };
   locationId!: number;
 
   constructor(    
@@ -82,25 +85,31 @@ export class EditLocationPage implements OnInit {
     }); 
   }
 
- ngOnInit() {
-    this.locationId = Number(this.route.snapshot.paramMap.get('id'));
-    this.locationService.getLocation(this.locationId).subscribe({
-      next: loc => this.location = loc,
-      error: err => {
-        // TODO: Show error to user
-        console.error('Failed to load location', err);
-      }
-    });
-  }
+location$ = of({} as Location);
 
-  updateLocation() {
-    if (!this.location.name || !this.location.address) return;
-    this.locationService.updateLocation(this.locationId, this.location as Location).subscribe({
-      next: () => this.router.navigate(['/location']),
-      error: err => {
+ngOnInit() {
+  this.locationId = Number(this.route.snapshot.paramMap.get('id'));
+  this.location$ = this.locationService.getLocation(this.locationId).pipe(
+    catchError((error) => {
+      // TODO: Show error to user
+      console.error('Failed to load location', error);
+      this.router.navigate(['/location']);
+      return of({} as Location);
+    })
+  );
+}
+
+updateLocation() {
+  this.locationService
+    .updateLocation(this.locationId, this.location as Location)
+    .pipe(
+      tap(() => this.router.navigate(['/location'])),
+      catchError((err) => {
         // TODO: Show error to user
         console.error('Failed to update location', err);
-      }
-    });
-  }
+        return of(undefined);
+      })
+    )
+    .subscribe();
+}
 }

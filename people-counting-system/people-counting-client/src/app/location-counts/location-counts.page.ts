@@ -36,6 +36,10 @@ import { refreshOutline, arrowBack } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { CountService, CountResponse } from '../services/count.service';
 import { LocationService } from '../services/location.service';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+type CountAggregate = 'minute' | 'hour' | 'day' | 'week';
 
 @Component({
   selector: 'app-device-counts',
@@ -73,12 +77,11 @@ import { LocationService } from '../services/location.service';
 })
 // ...existing code...
 export class LocationCountsPage implements OnInit {
-  startDate: string = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days ago
+  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString(); // beginning of today
   endDate: string = new Date().toISOString(); // now
   locationId: number | undefined;
   locationName: string | undefined;
-
-  aggregate: 'minute' | 'hour' | 'day' | 'week' = 'hour';
+  aggregate: CountAggregate = 'hour';
 
   showStartPicker = false;
   showEndPicker = false;
@@ -88,9 +91,9 @@ export class LocationCountsPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private countService: CountService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private router: Router
   ) {
     addIcons({
       refreshOutline,
@@ -100,29 +103,34 @@ export class LocationCountsPage implements OnInit {
 
   onRefresh() {
     if (!this.locationId) return;
-    this.countService.getCountsByLocation(
-      this.locationId,
-      this.startDate,
-      this.endDate,
-      this.aggregate
-    ).subscribe({
-      next: (resArr) => {
-        const res = Array.isArray(resArr) ? resArr[0] : resArr;
-        this.errorMsg = null;
-        this.chartOptions = this.mapCountsToChart(res);
-      },
-      error: err => {
-        this.errorMsg = 'Failed to load counts';
-        this.chartOptions = {};
-      }
-    });
+    this.countService
+      .getCountsByLocation(
+        this.locationId,
+        this.startDate,
+        this.endDate,
+        this.aggregate
+      )
+      .pipe(
+        map((res) => this.mapCountsToChart(res)),
+        catchError((error) => {
+          console.error(error);
+          this.errorMsg = 'Failed to load counts';
+          return of({});
+        })
+      )
+      .subscribe((chartOptions) => {
+        this.chartOptions = chartOptions;
+      });
   }
 
   mapCountsToChart(res: CountResponse) {
     if (!res || !Array.isArray(res.counts)) {
       return {
         data: [],
-        series: [{ type: 'line', xKey: 'x', yKey: 'y', yName: 'Count' }],
+        series: [
+          { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
+          { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' }
+        ],
         axes: [
           { type: 'time', position: 'bottom', title: { text: 'Time' } },
           { type: 'number', position: 'left', title: { text: 'Count' } }
@@ -130,8 +138,15 @@ export class LocationCountsPage implements OnInit {
       };
     }
     return {
-      data: res.counts.map(c => ({ x: new Date(c.timestamp), y: c.count })),
-      series: [{ type: 'line', xKey: 'x', yKey: 'y', yName: 'Count' }],
+      data: res.counts.map(c => ({
+        x: new Date(c.timestamp),
+        in: c.in,
+        out: c.out
+      })),
+      series: [
+        { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
+        { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' }
+      ],
       axes: [
         { type: 'time', position: 'bottom', title: { text: 'Time' } },
         { type: 'number', position: 'left', title: { text: 'Count' } }
@@ -141,12 +156,20 @@ export class LocationCountsPage implements OnInit {
 
   ngOnInit() {
     this.locationId = Number(this.route.snapshot.paramMap.get('id'));
-    this.locationName = this.route.snapshot.queryParamMap.get('name') || undefined;
-    if (!this.locationName && this.locationId) {
-      this.locationService.getLocation(this.locationId).subscribe(location => {
-        this.locationName = location?.name || 'Unknown';
-      });
+    if (!this.locationId) {
+      this.router.navigate(['/location']);
+      return;
     }
+    this.locationService.getLocation(this.locationId).pipe(
+      catchError((error) => {
+        console.error('Failed to load location:', error);
+        this.router.navigate(['/location']);
+        return of({ name: 'Unknown' });
+      })
+    ).subscribe(location => {
+      this.locationName = location?.name || 'Unknown';
+    });
+
     this.onRefresh();
   }
 }

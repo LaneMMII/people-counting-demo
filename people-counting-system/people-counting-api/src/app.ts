@@ -1,9 +1,10 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
+
 import { config } from './config';
 import { router as v1Router } from './v1/router';
-import cors from '@koa/cors';
 
 const app = new Koa();
 const router = new Router();

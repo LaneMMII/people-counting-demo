@@ -34,7 +34,8 @@ import {
   IonCard,
   IonCardHeader,
   } from '@ionic/angular/standalone';
-import { add } from 'ionicons/icons';
+import { tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-add-location',
@@ -65,9 +66,11 @@ import { add } from 'ionicons/icons';
     ]
 })
 export class AddLocationPage implements OnInit {
-  location: Partial<Location> = { name: '', address: '' };
+  location: Partial<Location> = { name: undefined, address: undefined };
 
-  constructor(private locationService: LocationService, private router: Router) {  
+  constructor
+  (private locationService: LocationService, 
+    private router: Router) {  
     addIcons({
       addCircle,
       eyeOutline,
@@ -80,15 +83,18 @@ export class AddLocationPage implements OnInit {
   ngOnInit() {
   }
 
-  addLocation() {
-    if (!this.location.name || !this.location.address) return;
-    this.locationService.createLocation(this.location as Location).subscribe({
-      next: () => this.router.navigate(['/location']),
-      error: err => {
-        // TODO: Show error to user
-        console.error('Failed to add location', err);
-      }
-    });
-  }
+  addLocation() {  
+      this.locationService  
+        .createLocation(this.location as Location)  
+        .pipe(  
+          tap(() => this.router.navigate(['/location'])),  
+          catchError((err) => {  
+            // TODO: show error message to user  
+            console.error('Failed to add location', err);  
+            return of(undefined);  
+          })  
+        )  
+        .subscribe();  
+    }  
 
 }

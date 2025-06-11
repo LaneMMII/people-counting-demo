@@ -5,13 +5,13 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface Device {
-  id?: number;
+  id: number;
   name: string;
   locationId: number;
   active: boolean;
-  created?: string;
-  updated?: string;
-  deleted?: string | null;
+  created: string;
+  updated: string;
+  deleted: string | null;
 }
 
 @Injectable({

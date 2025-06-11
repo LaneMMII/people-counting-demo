@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { DeviceService, Device } from '../services/device.service';
+import { DeviceService, type Device } from '../services/device.service';
 import { Router } from '@angular/router';
-import { LocationService } from '../services/location.service';
+import { LocationService, Location } from '../services/location.service';
 
 import {
   IonContent,
@@ -40,7 +40,8 @@ import {
   warningOutline
 } from 'ionicons/icons';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-device',
@@ -75,8 +76,8 @@ import { Observable, of } from 'rxjs';
 })
 
 export class AddDevicePage implements OnInit {
-  device: Partial<Device> = { name: '', locationId: 0, active: false };
-  locations$!: Observable<any[]>; 
+  device: Partial<Device> = { name: undefined, locationId: undefined, active: false };
+  locations$: Observable<Location[]> = this.locationService.getLocations();  
 
   constructor(
     private deviceService: DeviceService,
@@ -96,15 +97,17 @@ ngOnInit() {
   this.locations$ = this.locationService.getLocations();
   }
 
-  addDevice() {
-    // Ensure locationId is a number
-    if (!this.device.name || !this.device.locationId) return;
-    this.deviceService.createDevice(this.device as Device).subscribe({
-      next: () => this.router.navigate(['/device']),
-      error: err => {
-        // TODO: Show error to user
-        console.error('Failed to add device', err);
-      }
-    });
-  }
+  addDevice() {  
+    this.deviceService  
+      .createDevice(this.device as Device)  
+      .pipe(  
+        tap(() => this.router.navigate(['/device'])),  
+        catchError((err) => {  
+          // TODO: show error message to user  
+          console.error('Failed to add device', err);  
+          return of(undefined);  
+        })  
+      )  
+      .subscribe();  
+  }  
 }

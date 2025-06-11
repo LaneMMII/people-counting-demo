@@ -5,12 +5,12 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface Location {
-  id?: number;
+  id: number;
   name: string;
   address: string;
-  created?: string;
-  updated?: string;
-  deleted?: string | null;
+  created: string;
+  updated: string;
+  deleted: string | null;
 }
 
 @Injectable({

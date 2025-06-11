@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { Router } from '@angular/router';
 import { LocationService, Location } from '../services/location.service';
 
 import { addIcons } from 'ionicons';
@@ -14,6 +13,8 @@ import {
   trashOutline,
   warningOutline,
 } from 'ionicons/icons';
+
+import { switchMap, catchError } from 'rxjs/operators';
 
 import {
   IonContent,
@@ -61,7 +62,7 @@ import {
   ],
 })
 export class LocationPage implements OnInit {
-  locations$!: Observable<Location[]>;
+  locations$: Observable<Location[]> = this.locationService.getLocations();
 
   constructor(private locationService: LocationService) {
     addIcons({
@@ -74,19 +75,21 @@ export class LocationPage implements OnInit {
   }
 
   ngOnInit() {
-    this.locations$ = this.locationService.getLocations();
   }
 
-    deleteLocation(id?: number) {
-    if (id === undefined) return;
-    this.locationService.deleteLocation(id).subscribe({
-      next: () => {
-        this.locations$ = this.locationService.getLocations();
-      },
-      error: err => {
-        // TODO: Show error to user
-        console.error('Failed to delete location', err);
-      }
-    });
+  deleteLocation(location: Location)  {
+    this.locationService
+      .deleteLocation(location.id!)
+      .pipe(
+        switchMap(() => this.locationService.getLocations()),
+        catchError((error) => {
+          console.error('Error deleting location:', error);
+          return of([]);
+        })
+      )
+      .subscribe((locations) => {
+        this.locations$ = of(locations);
+      });
   }
 }
+

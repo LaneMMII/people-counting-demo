@@ -40,7 +40,10 @@ import {
 } from 'ionicons/icons';
 
 import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+
+import { Location } from '../services/location.service';
 
 @Component({
   selector: 'app-edit-device',
@@ -74,9 +77,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class EditDevicePage implements OnInit {
-  device: Partial<Device> = { name: '', locationId: 0, active: false };
-  locations$!: Observable<any[]>;
-  deviceId!: number;
+  deviceId: number = Number(this.route.snapshot.paramMap.get('id'));  
+  locations$: Observable<Location[]> = this.locationService.getLocations();  
+  device$: Observable<Device> = of({} as Device);
+  device: Device = {} as Device;
 
   constructor(
     private deviceService: DeviceService,
@@ -93,28 +97,32 @@ export class EditDevicePage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.locations$ = this.locationService.getLocations();
+  ngOnInit() {  
+    this.device$ = this.deviceService.getDevice(this.deviceId).pipe(  
+      catchError((error) => {  
+        // TODO: display error message to user  
+        console.error('Failed to load device:', error);  
+        this.router.navigate(['/device']);  
+        return of({} as Device);  
+      })  
+    );  
 
-
-    this.deviceId = Number(this.route.snapshot.paramMap.get('id'));
-    this.deviceService.getDevice(this.deviceId).subscribe({
-      next: dev => this.device = dev,
-      error: err => {
-        // TODO: Show error to user
-        console.error('Failed to load device', err);
-      }
+    this.device$.subscribe(device => {  
+      this.device = device;  
     });
-  }
+  }  
 
-  updateDevice() {
-    if (!this.device.name || !this.device.locationId) return;
-    this.deviceService.updateDevice(this.deviceId, this.device as Device).subscribe({
-      next: () => this.router.navigate(['/device']),
-      error: err => {
-        // TODO: Show error to user
-        console.error('Failed to update device', err);
-      }
-    });
-  }
+  updateDevice() {  
+    this.deviceService  
+      .updateDevice(this.deviceId, this.device as Device)  
+      .pipe(
+        tap(() => this.router.navigate(['/device'])),
+        catchError((err) => {
+          // TODO: show error message to user
+          console.error('Failed to add device', err);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }  
 }

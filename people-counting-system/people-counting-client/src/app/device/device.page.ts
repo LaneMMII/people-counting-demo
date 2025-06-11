@@ -31,6 +31,7 @@ import {
 
 import { Observable, of } from 'rxjs';
 import { DeviceService, Device } from '../services/device.service';
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-device',
@@ -59,7 +60,7 @@ import { DeviceService, Device } from '../services/device.service';
   ],
 })
 export class DevicePage implements OnInit {
-  devices$!: Observable<Device[]>;
+  devices$: Observable<Device[]> = this.deviceService.getDevices();  
 
   constructor(private deviceService: DeviceService) {
     addIcons({
@@ -72,18 +73,22 @@ export class DevicePage implements OnInit {
   }
 
   ngOnInit() {
-    this.devices$ = this.deviceService.getDevices();
   }
 
-  deleteDevice(id?: number) {
-    if (id === undefined) return;
-    this.deviceService.deleteDevice(id).subscribe({
-      next: () => {
-        this.devices$ = this.deviceService.getDevices();
-      },
-      error: err => {
-        console.error('Failed to delete device', err);
-      }
-    });
+  deleteDevice(id: number) {  
+      this.deviceService  
+        .deleteDevice(id)  
+        .pipe(  
+          switchMap(() => this.deviceService.getDevices()),  
+          catchError((error) => {  
+            console.error('Error deleting device:', error);  
+            return of([]);  
+          })  
+        )  
+        .subscribe((devices) => {  
+          this.devices$ = of(devices);  
+        });  
+    }  
 }
-}
+
+
