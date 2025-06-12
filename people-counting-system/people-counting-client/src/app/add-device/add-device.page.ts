@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DeviceService, type Device } from '../services/device.service';
 import { Router } from '@angular/router';
-import { LocationService, Location } from '../services/location.service';
+import { LocationService, type Location } from '../services/location.service';
 
 import {
   IonContent,
@@ -40,7 +40,7 @@ import {
   warningOutline
 } from 'ionicons/icons';
 
-import { Observable, of, tap } from 'rxjs';
+import { type Observable, of, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({
@@ -75,7 +75,7 @@ import { catchError } from 'rxjs/operators';
   ]
 })
 
-export class AddDevicePage implements OnInit {
+export class AddDevicePage {
   device: Partial<Device> = { name: undefined, locationId: undefined, active: false };
   locations$: Observable<Location[]> = this.locationService.getLocations();  
 
@@ -92,10 +92,6 @@ export class AddDevicePage implements OnInit {
     warningOutline
     });
    }
-
-ngOnInit() {
-  this.locations$ = this.locationService.getLocations();
-  }
 
   addDevice() {  
     this.deviceService  

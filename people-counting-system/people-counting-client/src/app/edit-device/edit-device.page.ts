@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { DeviceService, Device } from '../services/device.service';
+import { DeviceService, type Device } from '../services/device.service';
 import { Router } from '@angular/router';
-import { LocationService } from '../services/location.service';
+import { LocationService, type Location} from '../services/location.service';
 
 import { 
   IonContent,
@@ -39,11 +39,9 @@ import {
   warningOutline
 } from 'ionicons/icons';
 
-import { Observable, of } from 'rxjs';
+import { type Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-
-import { Location } from '../services/location.service';
 
 @Component({
   selector: 'app-edit-device',
@@ -79,7 +77,7 @@ import { Location } from '../services/location.service';
 export class EditDevicePage implements OnInit {
   deviceId: number = Number(this.route.snapshot.paramMap.get('id'));  
   locations$: Observable<Location[]> = this.locationService.getLocations();  
-  device$: Observable<Device> = of({} as Device);
+  device$: Observable<Device> = of();
   device: Device = {} as Device;
 
   constructor(
@@ -112,9 +110,17 @@ export class EditDevicePage implements OnInit {
     });
   }  
 
-  updateDevice() {  
+  updateDevice(name: string, locationId: number, active: boolean) {  
     this.deviceService  
-      .updateDevice(this.deviceId, this.device as Device)  
+      .updateDevice(this.deviceId, {
+        id: this.deviceId,
+        name,
+        locationId,
+        active,
+        created: this.device.created,
+        updated: this.device.updated,
+        deleted: this.device.deleted
+      })
       .pipe(
         tap(() => this.router.navigate(['/device'])),
         catchError((err) => {
@@ -124,5 +130,5 @@ export class EditDevicePage implements OnInit {
         })
       )
       .subscribe();
-  }  
+  }
 }

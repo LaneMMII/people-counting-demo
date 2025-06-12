@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { LocationService, Location } from '../services/location.service';
+import { LocationService, type Location } from '../services/location.service';
 import { Router } from '@angular/router';
 
 import { addIcons } from 'ionicons';
@@ -86,22 +86,27 @@ export class EditLocationPage implements OnInit {
   }
 
 location$ = of({} as Location);
-
 ngOnInit() {
   this.locationId = Number(this.route.snapshot.paramMap.get('id'));
   this.location$ = this.locationService.getLocation(this.locationId).pipe(
     catchError((error) => {
-      // TODO: Show error to user
-      console.error('Failed to load location', error);
+      console.error('Failed to load location:', error);
       this.router.navigate(['/location']);
       return of({} as Location);
     })
   );
 }
 
-updateLocation() {
+updateLocation(name: string, address: string) {
   this.locationService
-    .updateLocation(this.locationId, this.location as Location)
+    .updateLocation(this.locationId, {
+      id: this.locationId,
+      name,
+      address,
+      created: this.location.created,
+      updated: this.location.updated,
+      deleted: this.location.deleted
+    } as Location)
     .pipe(
       tap(() => this.router.navigate(['/location'])),
       catchError((err) => {

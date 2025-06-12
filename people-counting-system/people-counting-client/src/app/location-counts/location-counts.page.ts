@@ -34,12 +34,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { refreshOutline, arrowBack } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { CountService, CountResponse } from '../services/count.service';
+import { CountService } from '../services/count.service';
+import { CountResponse, CountAggregate } from '../interface/count.interface';
 import { LocationService } from '../services/location.service';
 import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
-
-type CountAggregate = 'minute' | 'hour' | 'day' | 'week';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-device-counts',
@@ -77,10 +76,9 @@ type CountAggregate = 'minute' | 'hour' | 'day' | 'week';
 })
 // ...existing code...
 export class LocationCountsPage implements OnInit {
-  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString(); // beginning of today
-  endDate: string = new Date().toISOString(); // now
+  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+  endDate: string = new Date().toISOString();
   locationId: number | undefined;
-  locationName: string | undefined;
   aggregate: CountAggregate = 'hour';
 
   showStartPicker = false;
@@ -88,6 +86,8 @@ export class LocationCountsPage implements OnInit {
 
   chartOptions: any = {};
   errorMsg: string | null = null;
+
+  location$: Observable<{ name: string } | undefined> = of();
 
   constructor(
     private route: ActivatedRoute,
@@ -160,15 +160,13 @@ export class LocationCountsPage implements OnInit {
       this.router.navigate(['/location']);
       return;
     }
-    this.locationService.getLocation(this.locationId).pipe(
+    this.location$ = this.locationService.getLocation(this.locationId).pipe(
       catchError((error) => {
         console.error('Failed to load location:', error);
         this.router.navigate(['/location']);
         return of({ name: 'Unknown' });
       })
-    ).subscribe(location => {
-      this.locationName = location?.name || 'Unknown';
-    });
+    );
 
     this.onRefresh();
   }

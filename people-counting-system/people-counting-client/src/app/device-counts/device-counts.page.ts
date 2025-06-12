@@ -32,16 +32,15 @@ import {
 } from '@ionic/angular/standalone';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { CountService, CountResponse } from '../services/count.service';
+import { CountService } from '../services/count.service';
+import { CountResponse, CountAggregate } from '../interface/count.interface';
 
 import { refreshOutline, arrowBack } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 import { map, catchError } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
-import { Device } from '../services/device.service';
-
-type CountAggregate = 'minute' | 'hour' | 'day' | 'week';
+import { type Observable, of, tap } from 'rxjs';
+import { type Device } from '../services/device.service';
 
 @Component({
   selector: 'app-device-counts',
@@ -84,7 +83,7 @@ export class DeviceCountsPage implements OnInit {
   deviceId: number
   deviceName: string | undefined;
   aggregate: CountAggregate = 'hour'; // default aggregation
-  device$!: Observable<Device>;
+  device$: Observable<Device | undefined> = of();
 
   showStartPicker = false;
   showEndPicker = false;
@@ -109,28 +108,30 @@ export class DeviceCountsPage implements OnInit {
     this.router.navigate(['/device']);
     }  
   }
-
-onRefresh() {  
-    this.countService  
-      .getCountsByDevice(  
-        this.deviceId,  
-        this.startDate,  
-        this.endDate,  
-        this.aggregate  
-      )  
-      .pipe(  
-        map((res) => this.mapCountsToChart(res)),  
-        catchError((error) => {  
-          console.error(error);  
-          return of({});  
-        })  
-      )  
-      .subscribe((chartOptions) => {  
-        this.chartOptions = chartOptions;  
-      });  
-  }  
+  
+  onRefresh() {  
+      this.countService  
+        .getCountsByDevice(  
+          this.deviceId,  
+          this.startDate,  
+          this.endDate,  
+          this.aggregate  
+        )  
+        .pipe(  
+          map((res) => this.mapCountsToChart(Array.isArray(res) ? res[0] : res)),  
+          tap((chartOptions) => {  
+            this.chartOptions = chartOptions;  
+          }),  
+          catchError((error) => {  
+            console.error(error);  
+            return of({});  
+          })  
+        )  
+        .subscribe();  
+    }  
   
 mapCountsToChart(res: CountResponse) {
+  console.log('API Response:', res);
   if (!res || !Array.isArray(res.counts)) {
     return {
     data: [],
@@ -145,10 +146,10 @@ mapCountsToChart(res: CountResponse) {
     };
   }
   return {
-    data: res.counts.map(c => ({
-    x: new Date(c.timestamp),
-    in: c.in,
-    out: c.out
+    data: res.counts.map((c: any) => ({
+      x: new Date(c.timestamp),
+      in: c.in,
+      out: c.out
     })),
     series: [
     { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
@@ -162,19 +163,14 @@ mapCountsToChart(res: CountResponse) {
   }
 
 ngOnInit() {  
-    this.device$ = this.deviceService.getDevice(this.deviceId).pipe(  
-      catchError((error) => {  
-        // TODO: display error message to user  
-        console.error('Failed to load device:', error);  
-        this.router.navigate(['/device']);  
-        return of({} as Device);  
-      })  
-    );  
+  this.device$ = this.deviceService.getDevice(this.deviceId).pipe(  
+    catchError((error) => {  
+      console.error('Failed to load device:', error);  
+      this.router.navigate(['/device']);  
+      return of(undefined);  
+    })  
+  );  
 
-    this.device$.subscribe(device => {
-    this.deviceName = device?.name || 'Unknown';
-  });
-
-    this.onRefresh();  
-  }  
+  this.onRefresh();  
+}
 }

@@ -23,35 +23,25 @@ export class LocationService {
 
   getLocations(): Observable<Location[]> {
     return this.http.get<{ locations: Location[] }>(`${this.apiUrl}/location`).pipe(
-      map(res => res.locations),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.locations));
   }
 
   getLocation(id: number): Observable<Location> {
     return this.http.get<{ location: Location }>(`${this.apiUrl}/location/${id}`).pipe(
-      map(res => res.location),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.location));
   }
 
   createLocation(location: Location): Observable<Location> {
     return this.http.post<{ location: Location }>(`${this.apiUrl}/location`, location).pipe(
-      map(res => res.location),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.location));
   }
 
   updateLocation(id: number, location: Location): Observable<Location> {
     return this.http.put<{ location: Location }>(`${this.apiUrl}/location/${id}`, location).pipe(
-      map(res => res.location),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.location));
   }
 
   deleteLocation(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/location/${id}`).pipe(
-      catchError(err => throwError(() => err))
-    );
+    return this.http.delete(`${this.apiUrl}/location/${id}`).pipe();
   }
 }

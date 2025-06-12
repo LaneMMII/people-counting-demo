@@ -11,7 +11,9 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title class="ion-text-center">
-        Location Count for "{{ locationName }}"
+        <ng-container *ngIf="location$ | async as location">
+          Location Count for "{{ location.name }}"
+        </ng-container>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -42,6 +44,7 @@
                   <ng-template>
                     <ion-datetime
                       [(ngModel)]="startDate"
+                      [max]="endDate"
                       id="startDatetime"
                     ></ion-datetime>
                   </ng-template>
@@ -56,6 +59,7 @@
                   <ng-template>
                     <ion-datetime
                       [(ngModel)]="endDate"
+                      [min]="startDate"
                       id="endDatetime"
                     ></ion-datetime>
                   </ng-template>

@@ -16,7 +16,11 @@
             <ion-card-title class="ion-text-center">Edit Device</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <form #deviceForm="ngForm" (ngSubmit)="updateDevice()">
+            <form
+              *ngIf="(device$ | async) as device"
+              #deviceForm="ngForm"
+              (ngSubmit)="updateDevice(device.name, device.locationId, device.active)"
+            >
               <ion-list lines="none">
                 <ion-item>
                   <ion-input

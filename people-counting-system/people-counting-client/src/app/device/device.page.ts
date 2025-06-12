@@ -29,8 +29,8 @@ import {
   warningOutline,
 } from 'ionicons/icons';
 
-import { Observable, of } from 'rxjs';
-import { DeviceService, Device } from '../services/device.service';
+import { type Observable, of } from 'rxjs';
+import { DeviceService, type Device } from '../services/device.service';
 import { catchError, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -59,7 +59,7 @@ import { catchError, switchMap } from 'rxjs/operators';
     IonNote,
   ],
 })
-export class DevicePage implements OnInit {
+export class DevicePage{
   devices$: Observable<Device[]> = this.deviceService.getDevices();  
 
   constructor(private deviceService: DeviceService) {
@@ -70,9 +70,6 @@ export class DevicePage implements OnInit {
       trashOutline,
       warningOutline,
     });
-  }
-
-  ngOnInit() {
   }
 
   deleteDevice(id: number) {  

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { LocationService, Location } from '../services/location.service';
+import { LocationService, type Location } from '../services/location.service';
 import { Router } from '@angular/router';
 
 import { addIcons } from 'ionicons';
@@ -65,7 +65,7 @@ import { of } from 'rxjs';
       IonCardHeader,
     ]
 })
-export class AddLocationPage implements OnInit {
+export class AddLocationPage{
   location: Partial<Location> = { name: undefined, address: undefined };
 
   constructor
@@ -78,9 +78,6 @@ export class AddLocationPage implements OnInit {
       trashOutline,
       warningOutline
     }); 
-  }
-
-  ngOnInit() {
   }
 
   addLocation() {  

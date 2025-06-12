@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface Device {
@@ -22,37 +21,27 @@ export class DeviceService {
 
   constructor(private http: HttpClient) {}
 
-  getDevices(): Observable<Device[]> {
+ getDevices(): Observable<Device[]> {
     return this.http.get<{ devices: Device[] }>(`${this.apiUrl}/device`).pipe(
-      map(res => res.devices),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.devices));
   }
 
   getDevice(id: number): Observable<Device> {
     return this.http.get<{ device: Device }>(`${this.apiUrl}/device/${id}`).pipe(
-      map(res => res.device),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.device));
   }
 
   createDevice(device: Device): Observable<Device> {
     return this.http.post<{ device: Device }>(`${this.apiUrl}/device`, device).pipe(
-      map(res => res.device),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.device));
   }
 
   updateDevice(id: number, device: Device): Observable<Device> {
     return this.http.put<{ device: Device }>(`${this.apiUrl}/device/${id}`, device).pipe(
-      map(res => res.device),
-      catchError(err => throwError(() => err))
-    );
+      map(res => res.device));
   }
 
   deleteDevice(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/device/${id}`).pipe(
-      catchError(err => throwError(() => err))
-    );
+    return this.http.delete(`${this.apiUrl}/device/${id}`).pipe();
   }
 }

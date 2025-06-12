@@ -18,7 +18,10 @@
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <form #locationForm="ngForm" (ngSubmit)="updateLocation()">
+            <form
+              #locationForm="ngForm"
+              (ngSubmit)="updateLocation(location.name || '', location.address || '')"
+            >
               <ion-list lines="none">
                 <ion-item>
                   <ion-input
