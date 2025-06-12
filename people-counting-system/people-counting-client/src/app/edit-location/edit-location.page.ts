@@ -12,16 +12,16 @@ import {
   eyeOutline,
   createOutline,
   trashOutline,
-  warningOutline
+  warningOutline,
 } from 'ionicons/icons';
 
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
   IonToolbar,
   IonCardTitle,
   IonInput,
@@ -45,14 +45,14 @@ import {
   styleUrls: ['./edit-location.page.scss'],
   standalone: true,
   imports: [
-    IonContent, 
+    IonContent,
     IonCardTitle,
     IonInput,
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
+    IonHeader,
+    IonTitle,
+    IonToolbar,
     IonCardContent,
-    CommonModule, 
+    CommonModule,
     FormsModule,
     IonButton,
     IonIcon,
@@ -65,56 +65,51 @@ import {
     IonButtons,
     IonCard,
     IonCardHeader,
-  ]
+  ],
 })
 export class EditLocationPage implements OnInit {
-  location: Partial<Location> = { name: undefined, address: undefined };
-  locationId!: number;
+  locationId: number = Number(this.route.snapshot.paramMap.get('id'));
 
-  constructor(    
+  constructor(
     private locationService: LocationService,
     private route: ActivatedRoute,
-    private router: Router) {  
-    
-      addIcons({
+    private router: Router
+  ) {
+    addIcons({
       addCircle,
       eyeOutline,
       createOutline,
       trashOutline,
-      warningOutline
-    }); 
+      warningOutline,
+    });
   }
 
-location$ = of({} as Location);
-ngOnInit() {
-  this.locationId = Number(this.route.snapshot.paramMap.get('id'));
-  this.location$ = this.locationService.getLocation(this.locationId).pipe(
-    catchError((error) => {
-      console.error('Failed to load location:', error);
-      this.router.navigate(['/location']);
-      return of({} as Location);
-    })
-  );
-}
-
-updateLocation(name: string, address: string) {
-  this.locationService
-    .updateLocation(this.locationId, {
-      id: this.locationId,
-      name,
-      address,
-      created: this.location.created,
-      updated: this.location.updated,
-      deleted: this.location.deleted
-    } as Location)
-    .pipe(
-      tap(() => this.router.navigate(['/location'])),
-      catchError((err) => {
-        // TODO: Show error to user
-        console.error('Failed to update location', err);
-        return of(undefined);
+  location$ = of({} as Location);
+  ngOnInit() {
+    this.location$ = this.locationService.getLocation(this.locationId).pipe(
+      catchError((error) => {
+        console.error('Failed to load location:', error);
+        this.router.navigate(['/location']);
+        return of({} as Location);
       })
-    )
-    .subscribe();
-}
+    );
+  }
+
+  updateLocation(name: string, address: string) {
+    this.locationService
+      .updateLocation(this.locationId, {
+        id: this.locationId,
+        name,
+        address,
+      } as Location)
+      .pipe(
+        tap(() => this.router.navigate(['/location'])),
+        catchError((err) => {
+          // TODO: Show error to user
+          console.error('Failed to update location', err);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }
 }

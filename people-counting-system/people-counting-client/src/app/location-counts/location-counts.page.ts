@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 
 import { AgCharts } from 'ag-charts-angular';
 
-import { 
-  IonButton, 
+import {
+  IonButton,
   IonDatetimeButton,
   IonModal,
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
+  IonContent,
+  IonHeader,
+  IonTitle,
   IonToolbar,
   IonMenuButton,
   IonButtons,
@@ -48,12 +48,12 @@ import { of, Observable } from 'rxjs';
   imports: [
     AgCharts,
     IonDatetimeButton,
-    IonContent, 
-    IonHeader, 
+    IonContent,
+    IonHeader,
     IonModal,
-    IonTitle, 
-    IonToolbar, 
-    CommonModule, 
+    IonTitle,
+    IonToolbar,
+    CommonModule,
     FormsModule,
     IonButton,
     IonMenuButton,
@@ -71,10 +71,9 @@ import { of, Observable } from 'rxjs';
     IonSelect,
     IonIcon,
     IonDatetime,
-    IonSelectOption
+    IonSelectOption,
   ],
 })
-// ...existing code...
 export class LocationCountsPage implements OnInit {
   startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
   endDate: string = new Date().toISOString();
@@ -97,12 +96,16 @@ export class LocationCountsPage implements OnInit {
   ) {
     addIcons({
       refreshOutline,
-      arrowBack
+      arrowBack,
     });
+
+    this.locationId = Number(this.route.snapshot.paramMap.get('id'));
   }
 
   onRefresh() {
-    if (!this.locationId) return;
+    if (!this.locationId) {
+      return;
+    }
     this.countService
       .getCountsByLocation(
         this.locationId,
@@ -129,33 +132,32 @@ export class LocationCountsPage implements OnInit {
         data: [],
         series: [
           { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
-          { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' }
+          { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' },
         ],
         axes: [
           { type: 'time', position: 'bottom', title: { text: 'Time' } },
-          { type: 'number', position: 'left', title: { text: 'Count' } }
-        ]
+          { type: 'number', position: 'left', title: { text: 'Count' } },
+        ],
       };
     }
     return {
-      data: res.counts.map(c => ({
+      data: res.counts.map((c) => ({
         x: new Date(c.timestamp),
         in: c.in,
-        out: c.out
+        out: c.out,
       })),
       series: [
         { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
-        { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' }
+        { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' },
       ],
       axes: [
         { type: 'time', position: 'bottom', title: { text: 'Time' } },
-        { type: 'number', position: 'left', title: { text: 'Count' } }
-      ]
+        { type: 'number', position: 'left', title: { text: 'Count' } },
+      ],
     };
   }
 
   ngOnInit() {
-    this.locationId = Number(this.route.snapshot.paramMap.get('id'));
     if (!this.locationId) {
       this.router.navigate(['/location']);
       return;

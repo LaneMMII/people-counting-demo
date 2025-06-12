@@ -11,13 +11,13 @@ import {
   eyeOutline,
   createOutline,
   trashOutline,
-  warningOutline
+  warningOutline,
 } from 'ionicons/icons';
 
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
   IonToolbar,
   IonCardTitle,
   IonInput,
@@ -33,7 +33,7 @@ import {
   IonButtons,
   IonCard,
   IonCardHeader,
-  } from '@ionic/angular/standalone';
+} from '@ionic/angular/standalone';
 import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -43,55 +43,55 @@ import { of } from 'rxjs';
   styleUrls: ['./add-location.page.scss'],
   standalone: true,
   imports: [
-      IonContent, 
-      IonCardTitle,
-      IonInput,
-      IonHeader, 
-      IonTitle, 
-      IonToolbar, 
-      IonCardContent,
-      CommonModule, 
-      FormsModule,
-      IonButton,
-      IonIcon,
-      IonGrid,
-      IonRow,
-      IonCol,
-      IonItem,
-      IonList,
-      IonMenuButton,
-      IonButtons,
-      IonCard,
-      IonCardHeader,
-    ]
+    IonContent,
+    IonCardTitle,
+    IonInput,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonCardContent,
+    CommonModule,
+    FormsModule,
+    IonButton,
+    IonIcon,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonItem,
+    IonList,
+    IonMenuButton,
+    IonButtons,
+    IonCard,
+    IonCardHeader,
+  ],
 })
-export class AddLocationPage{
+export class AddLocationPage {
   location: Partial<Location> = { name: undefined, address: undefined };
 
-  constructor
-  (private locationService: LocationService, 
-    private router: Router) {  
+  constructor(
+    private locationService: LocationService,
+    private router: Router
+  ) {
     addIcons({
       addCircle,
       eyeOutline,
       createOutline,
       trashOutline,
-      warningOutline
-    }); 
+      warningOutline,
+    });
   }
 
-  addLocation() {  
-      this.locationService  
-        .createLocation(this.location as Location)  
-        .pipe(  
-          tap(() => this.router.navigate(['/location'])),  
-          catchError((err) => {  
-            // TODO: show error message to user  
-            console.error('Failed to add location', err);  
-            return of(undefined);  
-          })  
-        )  
-        .subscribe();  
-    }  
-
+  addLocation() {
+    this.locationService
+      .createLocation(this.location as Location)
+      .pipe(
+        tap(() => this.router.navigate(['/location'])),
+        catchError((err) => {
+          // TODO: show error message to user
+          console.error('Failed to add location', err);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }
 }

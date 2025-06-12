@@ -10,35 +10,39 @@ export interface Device {
   active: boolean;
   created: string;
   updated: string;
-  deleted: string | null;
+  deleted: boolean | null;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DeviceService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
- getDevices(): Observable<Device[]> {
-    return this.http.get<{ devices: Device[] }>(`${this.apiUrl}/device`).pipe(
-      map(res => res.devices));
+  getDevices(): Observable<Device[]> {
+    return this.http
+      .get<{ devices: Device[] }>(`${this.apiUrl}/device`)
+      .pipe(map((res) => res.devices));
   }
 
   getDevice(id: number): Observable<Device> {
-    return this.http.get<{ device: Device }>(`${this.apiUrl}/device/${id}`).pipe(
-      map(res => res.device));
+    return this.http
+      .get<{ device: Device }>(`${this.apiUrl}/device/${id}`)
+      .pipe(map((res) => res.device));
   }
 
   createDevice(device: Device): Observable<Device> {
-    return this.http.post<{ device: Device }>(`${this.apiUrl}/device`, device).pipe(
-      map(res => res.device));
+    return this.http
+      .post<{ device: Device }>(`${this.apiUrl}/device`, device)
+      .pipe(map((res) => res.device));
   }
 
   updateDevice(id: number, device: Device): Observable<Device> {
-    return this.http.put<{ device: Device }>(`${this.apiUrl}/device/${id}`, device).pipe(
-      map(res => res.device));
+    return this.http
+      .put<{ device: Device }>(`${this.apiUrl}/device/${id}`, device)
+      .pipe(map((res) => res.device));
   }
 
   deleteDevice(id: number): Observable<any> {

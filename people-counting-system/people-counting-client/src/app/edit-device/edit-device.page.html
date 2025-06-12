@@ -19,7 +19,7 @@
             <form
               *ngIf="(device$ | async) as device"
               #deviceForm="ngForm"
-              (ngSubmit)="updateDevice(device.name, device.locationId, device.active)"
+              (ngSubmit)="updateDevice(device)"
             >
               <ion-list lines="none">
                 <ion-item>

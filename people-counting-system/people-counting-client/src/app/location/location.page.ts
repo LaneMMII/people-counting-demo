@@ -61,7 +61,7 @@ import {
     IonNote,
   ],
 })
-export class LocationPage implements OnInit {
+export class LocationPage {
   locations$: Observable<Location[]> = this.locationService.getLocations();
 
   constructor(private locationService: LocationService) {
@@ -74,10 +74,7 @@ export class LocationPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
-
-  deleteLocation(location: Location)  {
+  deleteLocation(location: Location) {
     this.locationService
       .deleteLocation(location.id!)
       .pipe(
@@ -92,4 +89,3 @@ export class LocationPage implements OnInit {
       });
   }
 }
-

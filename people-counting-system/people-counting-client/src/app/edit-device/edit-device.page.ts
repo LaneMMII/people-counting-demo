@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { DeviceService, type Device } from '../services/device.service';
 import { Router } from '@angular/router';
-import { LocationService, type Location} from '../services/location.service';
+import { LocationService, type Location } from '../services/location.service';
 
-import { 
+import {
   IonContent,
   IonHeader,
   IonTitle,
@@ -27,8 +27,8 @@ import {
   IonInput,
   IonSelectOption,
   IonSelect,
-  IonCheckbox
-  } from '@ionic/angular/standalone';
+  IonCheckbox,
+} from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import {
@@ -36,7 +36,7 @@ import {
   eyeOutline,
   createOutline,
   trashOutline,
-  warningOutline
+  warningOutline,
 } from 'ionicons/icons';
 
 import { type Observable, of } from 'rxjs';
@@ -49,36 +49,35 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./edit-device.page.scss'],
   standalone: true,
   imports: [
-  CommonModule,
-  FormsModule,
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonIcon,
-  IonMenuButton,
-  IonButtons,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonList,
-  IonItem,
-  IonCardHeader,
-  IonCardContent,
-  IonCardTitle,
-  IonCard,
-  IonInput,
-  IonSelectOption,
-  IonSelect,
-  IonCheckbox]
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButton,
+    IonIcon,
+    IonMenuButton,
+    IonButtons,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonList,
+    IonItem,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
+    IonCard,
+    IonInput,
+    IonSelectOption,
+    IonSelect,
+    IonCheckbox,
+  ],
 })
-
 export class EditDevicePage implements OnInit {
-  deviceId: number = Number(this.route.snapshot.paramMap.get('id'));  
-  locations$: Observable<Location[]> = this.locationService.getLocations();  
+  deviceId: number = Number(this.route.snapshot.paramMap.get('id'));
+  locations$: Observable<Location[]> = this.locationService.getLocations();
   device$: Observable<Device> = of();
-  device: Device = {} as Device;
 
   constructor(
     private deviceService: DeviceService,
@@ -91,41 +90,29 @@ export class EditDevicePage implements OnInit {
       eyeOutline,
       createOutline,
       trashOutline,
-      warningOutline
+      warningOutline,
     });
   }
 
-  ngOnInit() {  
-    this.device$ = this.deviceService.getDevice(this.deviceId).pipe(  
-      catchError((error) => {  
-        // TODO: display error message to user  
-        console.error('Failed to load device:', error);  
-        this.router.navigate(['/device']);  
-        return of({} as Device);  
-      })  
-    );  
-
-    this.device$.subscribe(device => {  
-      this.device = device;  
-    });
-  }  
-
-  updateDevice(name: string, locationId: number, active: boolean) {  
-    this.deviceService  
-      .updateDevice(this.deviceId, {
-        id: this.deviceId,
-        name,
-        locationId,
-        active,
-        created: this.device.created,
-        updated: this.device.updated,
-        deleted: this.device.deleted
+  ngOnInit() {
+    this.device$ = this.deviceService.getDevice(this.deviceId).pipe(
+      catchError((error) => {
+        // TODO: display error message to user
+        console.error('Failed to load device:', error);
+        this.router.navigate(['/device']);
+        return of({} as Device);
       })
+    );
+  }
+
+  updateDevice(device: Device) {
+    this.deviceService
+      .updateDevice(device.id, device)
       .pipe(
         tap(() => this.router.navigate(['/device'])),
         catchError((err) => {
           // TODO: show error message to user
-          console.error('Failed to add device', err);
+          console.error('Failed to update device', err);
           return of(undefined);
         })
       )
