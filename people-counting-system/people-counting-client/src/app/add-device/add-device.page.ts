@@ -99,7 +99,6 @@ export class AddDevicePage {
       .pipe(  
         tap(() => this.router.navigate(['/device'])),  
         catchError((err) => {  
-          // TODO: show error message to user  
           console.error('Failed to add device', err);  
           return of(undefined);  
         })  
