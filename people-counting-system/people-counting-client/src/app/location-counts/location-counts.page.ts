@@ -111,7 +111,7 @@ export class LocationCountsPage implements OnInit {
         this.aggregate
       )
       .pipe(
-        map((res) => this.mapCountsToChart(res)),
+        map((res) => this.mapCountsToChart(Array.isArray(res) ? res[0] : res)),
         catchError((error) => {
           console.error(error);
           this.errorMsg = 'Failed to load counts';
