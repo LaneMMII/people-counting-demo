@@ -40,6 +40,11 @@ import { LocationService } from '../services/location.service';
 import { catchError, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 
+import moment from 'moment';
+
+const now = moment();
+const fivePm = moment().set({ hour: 17, minute: 0, second: 0, millisecond: 0 });
+
 @Component({
   selector: 'app-device-counts',
   templateUrl: './location-counts.page.html',
@@ -75,8 +80,14 @@ import { of, Observable } from 'rxjs';
   ],
 })
 export class LocationCountsPage implements OnInit {
-  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
-  endDate: string = new Date().toISOString();
+  startDate: string = moment()
+    .set({ hour: 9, minute: 0, second: 0, millisecond: 0 })
+    .format('YYYY-MM-DDTHH:mm');
+
+  endDate: string = now.isAfter(fivePm)
+    ? fivePm.format('YYYY-MM-DDTHH:mm')
+    : now.format('YYYY-MM-DDTHH:mm');
+
   locationId: number | undefined;
   aggregate: CountAggregate = 'hour';
 
@@ -103,14 +114,21 @@ export class LocationCountsPage implements OnInit {
   }
 
   onRefresh() {
+    this.errorMsg = null;
+    if (moment.utc(this.endDate).isBefore(moment.utc(this.startDate))) {
+      this.errorMsg =
+        "'End' date must be greater than or equal to 'Start' date.";
+      return;
+    }
+
     if (!this.locationId) {
       return;
     }
     this.countService
       .getCountsByLocation(
         this.locationId,
-        this.startDate,
-        this.endDate,
+        moment(this.startDate).utc().toISOString(),
+        moment(this.endDate).utc().toISOString(),
         this.aggregate
       )
       .pipe(
@@ -142,7 +160,7 @@ export class LocationCountsPage implements OnInit {
     }
     return {
       data: res.counts.map((c) => ({
-        x: new Date(c.timestamp),
+        x: moment.utc(c.timestamp).toDate(),
         in: c.in,
         out: c.out,
       })),
