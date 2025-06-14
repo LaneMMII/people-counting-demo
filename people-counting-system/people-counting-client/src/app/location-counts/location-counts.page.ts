@@ -118,8 +118,8 @@ export class LocationCountsPage implements OnInit {
     this.countService
       .getCountsByLocation(
         this.locationId,
-        this.startDate,
-        this.endDate,
+        moment(this.startDate).utc().toISOString(),
+        moment(this.endDate).utc().toISOString(),
         this.aggregate
       )
       .pipe(

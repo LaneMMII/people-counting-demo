@@ -120,8 +120,8 @@ export class DeviceCountsPage implements OnInit {
     this.countService
       .getCountsByDevice(
         this.deviceId,
-        this.startDate,
-        this.endDate,
+        moment(this.startDate).utc().toISOString(),
+        moment(this.endDate).utc().toISOString(),
         this.aggregate
       )
       .pipe(
