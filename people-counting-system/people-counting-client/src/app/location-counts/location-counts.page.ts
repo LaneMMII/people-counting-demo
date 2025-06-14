@@ -40,6 +40,8 @@ import { LocationService } from '../services/location.service';
 import { catchError, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 
+import moment from 'moment';
+
 @Component({
   selector: 'app-device-counts',
   templateUrl: './location-counts.page.html',
@@ -103,6 +105,13 @@ export class LocationCountsPage implements OnInit {
   }
 
   onRefresh() {
+    this.errorMsg = null;
+    if (moment.utc(this.endDate).isBefore(moment.utc(this.startDate))) {
+      this.errorMsg =
+        "'End' date must be greater than or equal to 'Start' date.";
+      return;
+    }
+
     if (!this.locationId) {
       return;
     }

@@ -82,6 +82,9 @@
                 Refresh
               </ion-button>
             </ion-list>
+            <ion-item *ngIf="errorMsg" color="danger">
+              <ion-label>{{ errorMsg }}</ion-label>
+            </ion-item>
           </ion-col>
         </ion-row>
         <ion-row>

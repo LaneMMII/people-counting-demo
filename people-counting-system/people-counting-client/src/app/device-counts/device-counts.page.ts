@@ -42,6 +42,8 @@ import { map, catchError } from 'rxjs/operators';
 import { type Observable, of, tap } from 'rxjs';
 import { type Device } from '../services/device.service';
 
+import moment from 'moment';
+
 @Component({
   selector: 'app-device-counts',
   templateUrl: './device-counts.page.html',
@@ -109,6 +111,13 @@ export class DeviceCountsPage implements OnInit {
   }
 
   onRefresh() {
+    this.errorMsg = null;
+    if (moment.utc(this.endDate).isBefore(moment.utc(this.startDate))) {
+      this.errorMsg =
+        "'End' date must be greater than or equal to 'Start' date.";
+      return;
+    }
+
     this.countService
       .getCountsByDevice(
         this.deviceId,
