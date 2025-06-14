@@ -153,7 +153,7 @@ export class DeviceCountsPage implements OnInit {
     }
     return {
       data: res.counts.map((c: any) => ({
-        x: new Date(c.timestamp),
+        x: moment.utc(c.timestamp).local().toDate(),
         in: c.in,
         out: c.out,
       })),

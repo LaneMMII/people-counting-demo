@@ -1,6 +1,11 @@
 import { executeQuery } from "../../db";
-import { getAggregatedCountByDeviceQuery, getAggregatedCountByLocationQuery } from "./count.queries";
+import {
+  getAggregatedCountByDeviceQuery,
+  getAggregatedCountByLocationQuery,
+} from "./count.queries";
 import { CountResponse } from "../../interface";
+
+import moment from "moment";
 
 // Get aggregated count by device
 export const getAggregatedCountByDevice = async (
@@ -28,7 +33,7 @@ export const getAggregatedCountByDevice = async (
       };
     }
     grouped[row.deviceid].counts.push({
-      timestamp: row.bucket,
+      timestamp: moment.utc(row.bucket).local().format("YYYY-MM-DD HH:mm:ss"),
       in: Number(row.in),
       out: Number(row.out),
     });
@@ -62,7 +67,7 @@ export const getAggregatedCountByLocation = async (
       };
     }
     grouped[row.deviceid].counts.push({
-      timestamp: row.bucket,
+      timestamp: moment.utc(row.bucket).local().format("YYYY-MM-DD HH:mm:ss"),
       in: Number(row.in),
       out: Number(row.out),
     });

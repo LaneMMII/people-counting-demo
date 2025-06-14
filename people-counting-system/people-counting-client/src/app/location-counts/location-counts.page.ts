@@ -151,7 +151,7 @@ export class LocationCountsPage implements OnInit {
     }
     return {
       data: res.counts.map((c) => ({
-        x: new Date(c.timestamp),
+        x: moment.utc(c.timestamp).toDate(),
         in: c.in,
         out: c.out,
       })),
