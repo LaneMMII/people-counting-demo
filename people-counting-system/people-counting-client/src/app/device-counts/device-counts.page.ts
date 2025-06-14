@@ -79,8 +79,9 @@ import moment from 'moment';
   ],
 })
 export class DeviceCountsPage implements OnInit {
-  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString(); // beginning of today
-  endDate: string = new Date().toISOString(); // now
+  // Set start and end times in local time
+  startDate: string = moment().startOf('day').format(); // beginning of today in local time
+  endDate: string = moment().format(); // now in local time
   deviceId: number;
   deviceName: string | undefined;
   aggregate: CountAggregate = 'hour'; // default aggregation
@@ -89,7 +90,6 @@ export class DeviceCountsPage implements OnInit {
   showStartPicker = false;
   showEndPicker = false;
 
-  // Sample chart options, needs replaced later with actual data
   chartOptions: any = {};
   errorMsg: string | null = null;
 
@@ -112,7 +112,12 @@ export class DeviceCountsPage implements OnInit {
 
   onRefresh() {
     this.errorMsg = null;
-    if (moment.utc(this.endDate).isBefore(moment.utc(this.startDate))) {
+
+    // Convert start and end times to UTC for the API call
+    const startDateUTC = moment(this.startDate).utc().format();
+    const endDateUTC = moment(this.endDate).utc().format();
+
+    if (moment.utc(endDateUTC).isBefore(moment.utc(startDateUTC))) {
       this.errorMsg =
         "'End' date must be greater than or equal to 'Start' date.";
       return;
@@ -121,8 +126,8 @@ export class DeviceCountsPage implements OnInit {
     this.countService
       .getCountsByDevice(
         this.deviceId,
-        this.startDate,
-        this.endDate,
+        startDateUTC,
+        endDateUTC,
         this.aggregate
       )
       .pipe(
@@ -152,9 +157,11 @@ export class DeviceCountsPage implements OnInit {
         ],
       };
     }
+
+    // Convert timestamps from UTC to local time for the chart
     return {
       data: res.counts.map((c: any) => ({
-        x: new Date(c.timestamp),
+        x: moment.utc(c.timestamp).local().toDate(), // Convert to local time
         in: c.in,
         out: c.out,
       })),
@@ -163,7 +170,15 @@ export class DeviceCountsPage implements OnInit {
         { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' },
       ],
       axes: [
-        { type: 'time', position: 'bottom', title: { text: 'Time' } },
+        {
+          type: 'time',
+          position: 'bottom',
+          title: { text: 'Time' },
+          label: {
+            formatter: ({ value }: { value: Date }) =>
+              moment(value).format('hh:mm A'), // Format as local time
+          },
+        },
         { type: 'number', position: 'left', title: { text: 'Count' } },
       ],
     };
