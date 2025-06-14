@@ -79,9 +79,8 @@ import moment from 'moment';
   ],
 })
 export class DeviceCountsPage implements OnInit {
-  // Set start and end times in local time
-  startDate: string = moment().startOf('day').format(); // beginning of today in local time
-  endDate: string = moment().format(); // now in local time
+  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString(); // beginning of today
+  endDate: string = new Date().toISOString(); // now
   deviceId: number;
   deviceName: string | undefined;
   aggregate: CountAggregate = 'hour'; // default aggregation
@@ -112,12 +111,7 @@ export class DeviceCountsPage implements OnInit {
 
   onRefresh() {
     this.errorMsg = null;
-
-    // Convert start and end times to UTC for the API call
-    const startDateUTC = moment(this.startDate).utc().format();
-    const endDateUTC = moment(this.endDate).utc().format();
-
-    if (moment.utc(endDateUTC).isBefore(moment.utc(startDateUTC))) {
+    if (moment.utc(this.endDate).isBefore(moment.utc(this.startDate))) {
       this.errorMsg =
         "'End' date must be greater than or equal to 'Start' date.";
       return;
@@ -126,8 +120,8 @@ export class DeviceCountsPage implements OnInit {
     this.countService
       .getCountsByDevice(
         this.deviceId,
-        startDateUTC,
-        endDateUTC,
+        this.startDate,
+        this.endDate,
         this.aggregate
       )
       .pipe(
@@ -157,11 +151,9 @@ export class DeviceCountsPage implements OnInit {
         ],
       };
     }
-
-    // Convert timestamps from UTC to local time for the chart
     return {
       data: res.counts.map((c: any) => ({
-        x: moment.utc(c.timestamp).local().toDate(), // Convert to local time
+        x: new Date(c.timestamp),
         in: c.in,
         out: c.out,
       })),
@@ -170,15 +162,7 @@ export class DeviceCountsPage implements OnInit {
         { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' },
       ],
       axes: [
-        {
-          type: 'time',
-          position: 'bottom',
-          title: { text: 'Time' },
-          label: {
-            formatter: ({ value }: { value: Date }) =>
-              moment(value).format('hh:mm A'), // Format as local time
-          },
-        },
+        { type: 'time', position: 'bottom', title: { text: 'Time' } },
         { type: 'number', position: 'left', title: { text: 'Count' } },
       ],
     };
