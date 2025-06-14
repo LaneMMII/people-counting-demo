@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
+import { LocationService, Location } from '../services/location.service';
+
 import { addIcons } from 'ionicons';
 import {
   addCircle,
@@ -11,6 +13,8 @@ import {
   trashOutline,
   warningOutline,
 } from 'ionicons/icons';
+
+import { switchMap, catchError } from 'rxjs/operators';
 
 import {
   IonContent,
@@ -57,10 +61,10 @@ import {
     IonNote,
   ],
 })
-export class LocationPage implements OnInit {
-  locations$!: Observable<any[]>;
+export class LocationPage {
+  locations$: Observable<Location[]> = this.locationService.getLocations();
 
-  constructor() {
+  constructor(private locationService: LocationService) {
     addIcons({
       addCircle,
       eyeOutline,
@@ -70,56 +74,18 @@ export class LocationPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.locations$ = of([
-      {
-        id: 1,
-        name: 'American Eagle',
-        address: '123 Mall St',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 2,
-        name: 'Woods Grocery',
-        address: '456 Market Ave',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 3,
-        name: 'Hot Topic',
-        address: '789 Fashion Blvd',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 4,
-        name: 'Game Stop',
-        address: '101 Gaming Ln',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 5,
-        name: 'Best Buy',
-        address: '202 Tech Rd',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 6,
-        name: 'Target',
-        address: '303 Retail Dr',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-    ]);
+  deleteLocation(location: Location) {
+    this.locationService
+      .deleteLocation(location.id!)
+      .pipe(
+        switchMap(() => this.locationService.getLocations()),
+        catchError((error) => {
+          console.error('Error deleting location:', error);
+          return of([]);
+        })
+      )
+      .subscribe((locations) => {
+        this.locations$ = of(locations);
+      });
   }
 }

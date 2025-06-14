@@ -2,19 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { LocationService, type Location } from '../services/location.service';
+import { Router } from '@angular/router';
+
 import { addIcons } from 'ionicons';
 import {
   addCircle,
   eyeOutline,
   createOutline,
   trashOutline,
-  warningOutline
+  warningOutline,
 } from 'ionicons/icons';
 
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
   IonToolbar,
   IonCardTitle,
   IonInput,
@@ -30,8 +33,9 @@ import {
   IonButtons,
   IonCard,
   IonCardHeader,
-  } from '@ionic/angular/standalone';
-import { add } from 'ionicons/icons';
+} from '@ionic/angular/standalone';
+import { tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-add-location',
@@ -39,47 +43,55 @@ import { add } from 'ionicons/icons';
   styleUrls: ['./add-location.page.scss'],
   standalone: true,
   imports: [
-      IonContent, 
-      IonCardTitle,
-      IonInput,
-      IonHeader, 
-      IonTitle, 
-      IonToolbar, 
-      IonCardContent,
-      CommonModule, 
-      FormsModule,
-      IonButton,
-      IonIcon,
-      IonGrid,
-      IonRow,
-      IonCol,
-      IonItem,
-      IonList,
-      IonMenuButton,
-      IonButtons,
-      IonCard,
-      IonCardHeader,
-    ]
+    IonContent,
+    IonCardTitle,
+    IonInput,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonCardContent,
+    CommonModule,
+    FormsModule,
+    IonButton,
+    IonIcon,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonItem,
+    IonList,
+    IonMenuButton,
+    IonButtons,
+    IonCard,
+    IonCardHeader,
+  ],
 })
-export class AddLocationPage implements OnInit {
-  location = {name: '', address: ''}
+export class AddLocationPage {
+  location: Partial<Location> = { name: undefined, address: undefined };
 
-  constructor() {  
+  constructor(
+    private locationService: LocationService,
+    private router: Router
+  ) {
     addIcons({
       addCircle,
       eyeOutline,
       createOutline,
       trashOutline,
-      warningOutline
-    }); 
-  }
-
-  ngOnInit() {
+      warningOutline,
+    });
   }
 
   addLocation() {
-  //TODO: Implement the logic to add a new location
-  console.log("Add Location button clicked");
+    this.locationService
+      .createLocation(this.location as Location)
+      .pipe(
+        tap(() => this.router.navigate(['/location'])),
+        catchError((err) => {
+          // TODO: show error message to user
+          console.error('Failed to add location', err);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
-
 }

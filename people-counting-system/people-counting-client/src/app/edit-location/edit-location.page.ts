@@ -3,19 +3,25 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { LocationService, type Location } from '../services/location.service';
+import { Router } from '@angular/router';
+
 import { addIcons } from 'ionicons';
 import {
   addCircle,
   eyeOutline,
   createOutline,
   trashOutline,
-  warningOutline
+  warningOutline,
 } from 'ionicons/icons';
 
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
   IonToolbar,
   IonCardTitle,
   IonInput,
@@ -39,14 +45,14 @@ import {
   styleUrls: ['./edit-location.page.scss'],
   standalone: true,
   imports: [
-    IonContent, 
+    IonContent,
     IonCardTitle,
     IonInput,
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
+    IonHeader,
+    IonTitle,
+    IonToolbar,
     IonCardContent,
-    CommonModule, 
+    CommonModule,
     FormsModule,
     IonButton,
     IonIcon,
@@ -59,41 +65,51 @@ import {
     IonButtons,
     IonCard,
     IonCardHeader,
-  ]
+  ],
 })
 export class EditLocationPage implements OnInit {
-  location = { name: '', address: '' };
+  locationId: number = Number(this.route.snapshot.paramMap.get('id'));
 
-  // Mock locations array (replace with service in real app)
-  private locations = [
-    { id: 1, name: 'American Eagle', address: '123 Mall St' },
-    { id: 2, name: 'Woods Grocery', address: '456 Market Ave' },
-    { id: 3, name: 'Hot Topic', address: '789 Fashion Blvd' },
-    { id: 4, name: 'Game Stop', address: '101 Gaming Ln' },
-    { id: 5, name: 'Best Buy', address: '202 Tech Rd' },
-    { id: 6, name: 'Target', address: '303 Retail Dr' },
-  ];
-
-  constructor(private route: ActivatedRoute) {  
+  constructor(
+    private locationService: LocationService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     addIcons({
       addCircle,
       eyeOutline,
       createOutline,
       trashOutline,
-      warningOutline
-    }); 
+      warningOutline,
+    });
   }
 
+  location$ = of({} as Location);
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    const found = this.locations.find(loc => loc.id === id);
-    if (found) {
-      this.location = { ...found };
-    }
+    this.location$ = this.locationService.getLocation(this.locationId).pipe(
+      catchError((error) => {
+        console.error('Failed to load location:', error);
+        this.router.navigate(['/location']);
+        return of({} as Location);
+      })
+    );
   }
 
-  updateLocation() {
-    // TODO: Implement the logic to update the location
-    console.log("Location updated", this.location);
+  updateLocation(name: string, address: string) {
+    this.locationService
+      .updateLocation(this.locationId, {
+        id: this.locationId,
+        name,
+        address,
+      } as Location)
+      .pipe(
+        tap(() => this.router.navigate(['/location'])),
+        catchError((err) => {
+          // TODO: Show error to user
+          console.error('Failed to update location', err);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 }

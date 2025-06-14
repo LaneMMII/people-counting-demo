@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { DeviceService, type Device } from '../services/device.service';
+import { Router } from '@angular/router';
+import { LocationService, type Location } from '../services/location.service';
+
 import {
   IonContent,
   IonHeader,
@@ -36,7 +40,8 @@ import {
   warningOutline
 } from 'ionicons/icons';
 
-import { Observable, of } from 'rxjs';
+import { type Observable, of, tap } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-device',
@@ -70,11 +75,15 @@ import { Observable, of } from 'rxjs';
   ]
 })
 
-export class AddDevicePage implements OnInit {
-  device = { name: '', location: '', active :false };
-  locations$!: Observable<any[]>; 
+export class AddDevicePage {
+  device: Partial<Device> = { name: undefined, locationId: undefined, active: false };
+  locations$: Observable<Location[]> = this.locationService.getLocations();  
 
-  constructor() {
+  constructor(
+    private deviceService: DeviceService,
+    private router: Router,
+    private locationService: LocationService
+  ) {
   addIcons({
     addCircle,
     eyeOutline,
@@ -84,61 +93,16 @@ export class AddDevicePage implements OnInit {
     });
    }
 
-ngOnInit() {
-    this.locations$ = of([
-      {
-        id: 1,
-        name: 'American Eagle',
-        address: '123 Mall St',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 2,
-        name: 'Woods Grocery',
-        address: '456 Market Ave',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 3,
-        name: 'Hot Topic',
-        address: '789 Fashion Blvd',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 4,
-        name: 'Game Stop',
-        address: '101 Gaming Ln',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 5,
-        name: 'Best Buy',
-        address: '202 Tech Rd',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-      {
-        id: 6,
-        name: 'Target',
-        address: '303 Retail Dr',
-        created: '2025-06-01T01:19:25.294Z',
-        updated: '2025-06-01T01:19:25.294Z',
-        deleted: null,
-      },
-    ]);
-  }
-
-  addDevice() {
-    //TODO: Implement the logic to add a new device
-    console.log("Add Device button clicked");
-  }
+  addDevice() {  
+    this.deviceService  
+      .createDevice(this.device as Device)  
+      .pipe(  
+        tap(() => this.router.navigate(['/device'])),  
+        catchError((err) => {  
+          console.error('Failed to add device', err);  
+          return of(undefined);  
+        })  
+      )  
+      .subscribe();  
+  }  
 }
