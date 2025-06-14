@@ -42,6 +42,9 @@ import { of, Observable } from 'rxjs';
 
 import moment from 'moment';
 
+const now = moment();
+const fivePm = moment().set({ hour: 17, minute: 0, second: 0, millisecond: 0 });
+
 @Component({
   selector: 'app-device-counts',
   templateUrl: './location-counts.page.html',
@@ -77,8 +80,14 @@ import moment from 'moment';
   ],
 })
 export class LocationCountsPage implements OnInit {
-  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
-  endDate: string = new Date().toISOString();
+  startDate: string = moment()
+    .set({ hour: 9, minute: 0, second: 0, millisecond: 0 })
+    .format('YYYY-MM-DDTHH:mm');
+
+  endDate: string = now.isAfter(fivePm)
+    ? fivePm.format('YYYY-MM-DDTHH:mm')
+    : now.format('YYYY-MM-DDTHH:mm');
+
   locationId: number | undefined;
   aggregate: CountAggregate = 'hour';
 
