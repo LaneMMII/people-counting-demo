@@ -14,7 +14,7 @@ import {
   warningOutline,
 } from 'ionicons/icons';
 
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, tap } from 'rxjs/operators';
 
 import {
   IonContent,
@@ -34,6 +34,8 @@ import {
   IonText,
   IonNote,
 } from '@ionic/angular/standalone';
+
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-location',
@@ -64,7 +66,10 @@ import {
 export class LocationPage {
   locations$: Observable<Location[]> = this.locationService.getLocations();
 
-  constructor(private locationService: LocationService) {
+  constructor(
+    private locationService: LocationService,
+    private toastService: ToastService
+  ) {
     addIcons({
       addCircle,
       eyeOutline,
@@ -78,9 +83,18 @@ export class LocationPage {
     this.locationService
       .deleteLocation(location.id!)
       .pipe(
+        tap(() =>
+          this.toastService.presentToastSuccess(
+            'Location deleted successfully!'
+          )
+        ),
         switchMap(() => this.locationService.getLocations()),
         catchError((error) => {
           console.error('Error deleting location:', error);
+          this.toastService.presentToastError(
+            error,
+            'Failed to delete location'
+          );
           return of([]);
         })
       )

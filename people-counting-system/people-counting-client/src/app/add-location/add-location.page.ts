@@ -37,6 +37,8 @@ import {
 import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
+import { ToastService } from '../services/toast.service';
+
 @Component({
   selector: 'app-add-location',
   templateUrl: './add-location.page.html',
@@ -70,7 +72,8 @@ export class AddLocationPage {
 
   constructor(
     private locationService: LocationService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     addIcons({
       addCircle,
@@ -85,9 +88,12 @@ export class AddLocationPage {
     this.locationService
       .createLocation(this.location as Location)
       .pipe(
-        tap(() => this.router.navigate(['/location'])),
+        tap(() => {
+          this.toastService.presentToastSuccess('Location added successfully!');
+          this.router.navigate(['/location']);
+        }),
         catchError((err) => {
-          // TODO: show error message to user
+          this.toastService.presentToastError(err, 'Failed to add location');
           console.error('Failed to add location', err);
           return of(undefined);
         })
