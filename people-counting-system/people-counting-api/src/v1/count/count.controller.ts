@@ -1,10 +1,12 @@
-import z from 'zod';
+import z from "zod";
 import {
   getAggregatedCountByDevice,
   getAggregatedCountByLocation,
-} from './count.service';
+} from "./count.service";
 
-const AGGREGATES = ['minute', 'hour', 'day', 'week'] as const;
+import moment from "moment";
+
+const AGGREGATES = ["minute", "hour", "day", "week"] as const;
 
 export const countQuerySchema = z.object({
   deviceId: z.coerce.number().optional(),
@@ -30,13 +32,25 @@ export const getAggregatedCountController = async (ctx: any) => {
   if (!parseResult.success) {
     ctx.status = 400;
     ctx.body = {
-      error: parseResult.error.errors.map((e) => e.message).join(', '),
+      error: parseResult.error.errors.map((e) => e.message).join(", "),
     };
     return;
   }
 
   const { deviceId, locationId, start, end, aggregate } = parseResult.data;
-  const agg = aggregate || 'minute';
+  const agg = aggregate || "minute";
+
+  if (start && end) {
+    const startMoment = moment.utc(start);
+    const endMoment = moment.utc(end);
+    if (endMoment.isBefore(startMoment)) {
+      ctx.status = 400;
+      ctx.body = {
+        error: "'end' date must be greater than or equal to 'start' date",
+      };
+      return;
+    }
+  }
 
   try {
     let result;
@@ -45,24 +59,24 @@ export const getAggregatedCountController = async (ctx: any) => {
         deviceId,
         start!,
         end || new Date().toISOString(),
-        agg,
+        agg
       );
     } else if (locationId !== undefined) {
       result = await getAggregatedCountByLocation(
         locationId,
         start!,
         end || new Date().toISOString(),
-        agg,
+        agg
       );
     } else {
       ctx.status = 400;
-      ctx.body = { error: 'Either deviceId or locationId must be provided' };
+      ctx.body = { error: "Either deviceId or locationId must be provided" };
       return;
     }
 
     ctx.body = result;
   } catch (err) {
     ctx.status = 500;
-    ctx.body = { error: 'Internal server error' };
+    ctx.body = { error: "Internal server error" };
   }
 };

@@ -42,6 +42,11 @@ import { map, catchError } from 'rxjs/operators';
 import { type Observable, of, tap } from 'rxjs';
 import { type Device } from '../services/device.service';
 
+import moment from 'moment';
+
+const now = moment();
+const fivePm = moment().set({ hour: 17, minute: 0, second: 0, millisecond: 0 });
+
 @Component({
   selector: 'app-device-counts',
   templateUrl: './device-counts.page.html',
@@ -77,8 +82,14 @@ import { type Device } from '../services/device.service';
   ],
 })
 export class DeviceCountsPage implements OnInit {
-  startDate: string = new Date(new Date().setHours(0, 0, 0, 0)).toISOString(); // beginning of today
-  endDate: string = new Date().toISOString(); // now
+  startDate: string = moment()
+    .set({ hour: 9, minute: 0, second: 0, millisecond: 0 })
+    .format('YYYY-MM-DDTHH:mm');
+
+  endDate: string = now.isAfter(fivePm)
+    ? fivePm.format('YYYY-MM-DDTHH:mm')
+    : now.format('YYYY-MM-DDTHH:mm');
+
   deviceId: number;
   deviceName: string | undefined;
   aggregate: CountAggregate = 'hour'; // default aggregation
@@ -87,7 +98,6 @@ export class DeviceCountsPage implements OnInit {
   showStartPicker = false;
   showEndPicker = false;
 
-  // Sample chart options, needs replaced later with actual data
   chartOptions: any = {};
   errorMsg: string | null = null;
 
@@ -109,11 +119,18 @@ export class DeviceCountsPage implements OnInit {
   }
 
   onRefresh() {
+    this.errorMsg = null;
+    if (moment.utc(this.endDate).isBefore(moment.utc(this.startDate))) {
+      this.errorMsg =
+        "'End' date must be greater than or equal to 'Start' date.";
+      return;
+    }
+
     this.countService
       .getCountsByDevice(
         this.deviceId,
-        this.startDate,
-        this.endDate,
+        moment(this.startDate).utc().toISOString(),
+        moment(this.endDate).utc().toISOString(),
         this.aggregate
       )
       .pipe(
@@ -145,7 +162,7 @@ export class DeviceCountsPage implements OnInit {
     }
     return {
       data: res.counts.map((c: any) => ({
-        x: new Date(c.timestamp),
+        x: moment.utc(c.timestamp).local().toDate(),
         in: c.in,
         out: c.out,
       })),
