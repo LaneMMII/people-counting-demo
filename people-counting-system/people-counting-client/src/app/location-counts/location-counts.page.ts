@@ -132,7 +132,7 @@ export class LocationCountsPage implements OnInit {
         this.aggregate
       )
       .pipe(
-        map((res) => this.mapCountsToChart(Array.isArray(res) ? res[0] : res)),
+        map((res) => this.mapCountsToChart(res)),
         catchError((error) => {
           console.error(error);
           this.errorMsg = 'Failed to load counts';
@@ -144,26 +144,29 @@ export class LocationCountsPage implements OnInit {
       });
   }
 
-  mapCountsToChart(res: CountResponse) {
-    if (!res || !Array.isArray(res.counts)) {
-      return {
-        data: [],
-        series: [
-          { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
-          { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' },
-        ],
-        axes: [
-          { type: 'time', position: 'bottom', title: { text: 'Time' } },
-          { type: 'number', position: 'left', title: { text: 'Count' } },
-        ],
-      };
+  mapCountsToChart(res: CountResponse[] | CountResponse) {
+    const countsByTime: Record<string, { in: number; out: number }> = {};
+
+    const responses = Array.isArray(res) ? res : [res];
+    for (const device of responses) {
+      for (const c of device.counts) {
+        const key = c.timestamp;
+        if (!countsByTime[key]) {
+          countsByTime[key] = { in: 0, out: 0 };
+        }
+        countsByTime[key].in += c.in;
+        countsByTime[key].out += c.out;
+      }
     }
+
+    const data = Object.entries(countsByTime).map(([timestamp, value]) => ({
+      x: new Date(timestamp),
+      in: value.in,
+      out: value.out,
+    }));
+
     return {
-      data: res.counts.map((c) => ({
-        x: moment.utc(c.timestamp).toDate(),
-        in: c.in,
-        out: c.out,
-      })),
+      data,
       series: [
         { type: 'line', xKey: 'x', yKey: 'in', yName: 'In' },
         { type: 'line', xKey: 'x', yKey: 'out', yName: 'Out' },
