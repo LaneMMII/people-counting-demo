@@ -4,7 +4,7 @@
 
 - **Node.js**: v22 or higher
 - **pnpm**: v10 or higher
-- **PostgreSQL**: Ensure you have access to a running PostgreSQL instance
+- **PostgreSQL**: v14 or higher
 - **Ionic CLI**: v7 or higher
 
 ## Setup
