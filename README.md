@@ -1,5 +1,8 @@
 # People Counting Demo
 
+![people-counting-demo](https://github.com/user-attachments/assets/c068fee3-d9f6-472b-8da8-eac4d0a26597)
+
+
 ## Requirements
 
 - **Node.js**: v22 or higher
