@@ -10,7 +10,9 @@
     "start:people-counting-api": "pnpm --prefix people-counting-system/people-counting-api start",
     "dev:people-counting-api": "pnpm --prefix people-counting-system/people-counting-api dev",
     "dev:people-counting-client": "pnpm --prefix people-counting-system/people-counting-client dev",
-    "dev:all": "concurrently \"pnpm run dev:sensor-api\" \"pnpm run dev:people-counting-api\" \"pnpm run dev:people-counting-client\""
+    "dev:all": "concurrently \"pnpm run dev:sensor-api\" \"pnpm run dev:people-counting-api\" \"pnpm run dev:people-counting-client\"",
+    "setup:dbs": "node setup-dbs.js",
+    "dev:all:migrate": "pnpm setup:dbs && pnpm dev:all"
   },
   "keywords": [],
   "author": "",

@@ -25,6 +25,8 @@ This repository is a pnpm workspace monorepo containing two systems:
 
 1. **Clone the repository**
 
+Run the following commands in your shell:
+
 ```sh
 git clone git@github.com:LaneMMII/people-counting-demo.git
 ```
