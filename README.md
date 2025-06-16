@@ -21,61 +21,33 @@ This repository is a pnpm workspace monorepo containing two systems:
 
 ## Setup
 
-1. **Create Databases**
+1. **Clone the repository**
 
 Run the following commands in your PostgreSQL client:
 
-```sql
-CREATE DATABASE sensor_db;
-CREATE DATABASE people_counting;
+```sh
+git clone git@github.com:LaneMMII/people-counting-demo.git
 ```
 
-2. **Run Migrations and Seeds**
-
-Apply the migration and seed files located in `/sensor-system/migrations/`:
-
-- `v0.1.sql` (migration)
-- Seed file (also in the same directory)
-
-> **Note:** Run these scripts on the appropriate databases before starting the APIs.
-
-3. **Install Dependencies**
+2. **Install dependencies**
 
 ```sh
 pnpm install
 ```
 
-## Running the APIs
+3. **Run the Application**
 
-- **Sensor API:**  
-  Start locally with:
-
-  ```sh
-  pnpm dev:sensor-api
-  ```
-
-- **People Counting API:**  
-  Start locally with:
-
-  ```sh
-  pnpm dev:people-counting-api
-  ```
-
-- **Run Both in Tandem (Recommended):**  
-  Start locally with:
-  ```sh
-  pnpm dev:all
-  ```
-
-## Running the Client Application
-
-Start the client application locally with:
+- Running the following script will create the appropriate databases, tables, seed data, as well as run both APIs and the client.
 
 ```sh
-pnpm dev:people-counting-client
+pnpm dev:all:migrate
 ```
 
-This will launch the frontend "people-counting" application that will connect to the people-counting-api. The client app should automatically open in your default browser on port 8100.
+- If you want to run the APIs and client without dropping and recreating the databases simply run:
+
+```sh
+pnpm dev:all
+```
 
 ## Debugging
 
