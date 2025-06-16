@@ -6,10 +6,12 @@
 
 This repository is a pnpm workspace monorepo containing two systems:
 
-1. Sensor System
+1. **Sensor System:**
+
    Simulates third-party people-counting sensors that send count packets every minute to a specified ingest endpoint. Each sensor has a single count line and minimal configuration comprising of a hours of operation schedule, firmware version, mount height, and data push endpoint.
 
-2. People Counting System
+2. **People Counting System:**
+
    Represents an integrator application that captures data from sensors and presents it to end users. For simplicity, sensors are not linked to devices via a foreign key. Instead, a shared static identity (Sensor.id and Device.id) is used during seeding, as the sensor list does not change. Within the people counting system the user can create, edit, delete both devices and locations. As well as the user can view count data by device or location. The API allows for pulling count data between a date range and aggregating by minute, hour, day, or week. The data will be displayed on a line chart with "in" counts on one line and "out" counts on a separate line.
 
 ## Requirements
