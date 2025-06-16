@@ -20,10 +20,10 @@ DECLARE
     -- Example: If NOW() is '2025-05-30 15:30:00':
     --   start_datetime will be '2025-05-17 00:00:00'
     --   end_datetime will be '2025-05-30 15:30:00'
-    v_start_datetime TIMESTAMP WITH TIME ZONE := date_trunc('day', NOW() - interval '13 days');
-    v_end_datetime TIMESTAMP WITH TIME ZONE := NOW();
+    v_start_datetime TIMESTAMP WITH TIME ZONE := date_trunc('day', NOW() AT TIME ZONE 'UTC' - interval '13 days');
+    v_end_datetime TIMESTAMP WITH TIME ZONE := NOW() AT TIME ZONE 'UTC';
 BEGIN
-    RAISE NOTICE 'Starting backfill of count data from % to %', v_start_datetime, v_end_datetime;
+    RAISE NOTICE 'Starting backfill of count data from % to % (UTC)', v_start_datetime, v_end_datetime;
 
     WITH
     -- 1. Generate a series of timestamps for every minute in the defined period
