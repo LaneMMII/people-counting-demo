@@ -25,19 +25,23 @@ This repository is a pnpm workspace monorepo containing two systems:
 
 1. **Clone the repository**
 
-Run the following commands in your PostgreSQL client:
+Run the following commands in your shell:
 
 ```sh
 git clone git@github.com:LaneMMII/people-counting-demo.git
 ```
 
-2. **Install dependencies**
+1. **Install dependencies**
 
 ```sh
 pnpm install
 ```
 
-3. **Run the Application**
+1. **Set Up Environment**
+
+Copy `sensor-system/sensor-api/.env-example` and `people-counting-system/people-counting-api/.env-example` to `.env` files and set the appropriate environment variables.
+
+1. **Run the Application**
 
 - Running the following script will create the appropriate databases, tables, seed data, as well as run both APIs and the client.
 
