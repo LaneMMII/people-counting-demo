@@ -31,7 +31,9 @@ import {
 
 import { type Observable, of } from 'rxjs';
 import { DeviceService, type Device } from '../services/device.service';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-device',
@@ -59,10 +61,13 @@ import { catchError, switchMap } from 'rxjs/operators';
     IonNote,
   ],
 })
-export class DevicePage{
-  devices$: Observable<Device[]> = this.deviceService.getDevices();  
+export class DevicePage {
+  devices$: Observable<Device[]> = this.deviceService.getDevices();
 
-  constructor(private deviceService: DeviceService) {
+  constructor(
+    private deviceService: DeviceService,
+    private toastService: ToastService
+  ) {
     addIcons({
       addCircle,
       eyeOutline,
@@ -72,20 +77,22 @@ export class DevicePage{
     });
   }
 
-  deleteDevice(id: number) {  
-      this.deviceService  
-        .deleteDevice(id)  
-        .pipe(  
-          switchMap(() => this.deviceService.getDevices()),  
-          catchError((error) => {  
-            console.error('Error deleting device:', error);  
-            return of([]);  
-          })  
-        )  
-        .subscribe((devices) => {  
-          this.devices$ = of(devices);  
-        });  
-    }  
+  deleteDevice(id: number) {
+    this.deviceService
+      .deleteDevice(id)
+      .pipe(
+        tap(() =>
+          this.toastService.presentToastSuccess('Device deleted successfully!')
+        ),
+        switchMap(() => this.deviceService.getDevices()),
+        catchError((error) => {
+          console.error('Error deleting device:', error);
+          this.toastService.presentToastError(error, 'Failed to delete device');
+          return of([]);
+        })
+      )
+      .subscribe((devices) => {
+        this.devices$ = of(devices);
+      });
+  }
 }
-
-

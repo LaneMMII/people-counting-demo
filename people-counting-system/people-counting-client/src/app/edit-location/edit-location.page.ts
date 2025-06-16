@@ -39,6 +39,8 @@ import {
   IonCardHeader,
 } from '@ionic/angular/standalone';
 
+import { ToastService } from '../services/toast.service';
+
 @Component({
   selector: 'app-edit-location',
   templateUrl: './edit-location.page.html',
@@ -73,7 +75,8 @@ export class EditLocationPage implements OnInit {
   constructor(
     private locationService: LocationService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     addIcons({
       addCircle,
@@ -103,10 +106,15 @@ export class EditLocationPage implements OnInit {
         address,
       } as Location)
       .pipe(
-        tap(() => this.router.navigate(['/location'])),
+        tap(() => {
+          this.toastService.presentToastSuccess(
+            'Location updated successfully!'
+          );
+          this.router.navigate(['/location']);
+        }),
         catchError((err) => {
-          // TODO: Show error to user
           console.error('Failed to update location', err);
+          this.toastService.presentToastError(err, 'Failed to update location');
           return of(undefined);
         })
       )

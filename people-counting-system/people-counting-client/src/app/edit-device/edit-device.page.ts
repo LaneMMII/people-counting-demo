@@ -43,6 +43,8 @@ import { type Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
+import { ToastService } from '../services/toast.service';
+
 @Component({
   selector: 'app-edit-device',
   templateUrl: './edit-device.page.html',
@@ -83,7 +85,8 @@ export class EditDevicePage implements OnInit {
     private deviceService: DeviceService,
     private route: ActivatedRoute,
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private toastService: ToastService
   ) {
     addIcons({
       addCircle,
@@ -104,14 +107,16 @@ export class EditDevicePage implements OnInit {
       })
     );
   }
-
   updateDevice(device: Device) {
     this.deviceService
       .updateDevice(device.id, device)
       .pipe(
-        tap(() => this.router.navigate(['/device'])),
+        tap(() => {
+          this.toastService.presentToastSuccess('Device updated successfully!');
+          this.router.navigate(['/device']);
+        }),
         catchError((err) => {
-          // TODO: show error message to user
+          this.toastService.presentToastError(err, 'Failed to update device');
           console.error('Failed to update device', err);
           return of(undefined);
         })

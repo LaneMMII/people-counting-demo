@@ -27,9 +27,8 @@ import {
   IonInput,
   IonSelectOption,
   IonSelect,
-  IonCheckbox
+  IonCheckbox,
 } from '@ionic/angular/standalone';
-
 
 import { addIcons } from 'ionicons';
 import {
@@ -37,11 +36,12 @@ import {
   eyeOutline,
   createOutline,
   trashOutline,
-  warningOutline
+  warningOutline,
 } from 'ionicons/icons';
 
 import { type Observable, of, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-add-device',
@@ -49,17 +49,17 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./add-device.page.scss'],
   standalone: true,
   imports: [
-    IonContent, 
+    IonContent,
     IonCardTitle,
     IonInput,
     IonSelect,
     IonSelectOption,
     IonCheckbox,
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
+    IonHeader,
+    IonTitle,
+    IonToolbar,
     IonCardContent,
-    CommonModule, 
+    CommonModule,
     FormsModule,
     IonButton,
     IonIcon,
@@ -72,37 +72,45 @@ import { catchError } from 'rxjs/operators';
     IonButtons,
     IonCard,
     IonCardHeader,
-  ]
+  ],
 })
-
 export class AddDevicePage {
-  device: Partial<Device> = { name: undefined, locationId: undefined, active: false };
-  locations$: Observable<Location[]> = this.locationService.getLocations();  
+  device: Partial<Device> = {
+    name: undefined,
+    locationId: undefined,
+    active: false,
+  };
+  locations$: Observable<Location[]> = this.locationService.getLocations();
 
   constructor(
     private deviceService: DeviceService,
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private toastService: ToastService
   ) {
-  addIcons({
-    addCircle,
-    eyeOutline,
-    createOutline,
-    trashOutline,
-    warningOutline
+    addIcons({
+      addCircle,
+      eyeOutline,
+      createOutline,
+      trashOutline,
+      warningOutline,
     });
-   }
+  }
 
-  addDevice() {  
-    this.deviceService  
-      .createDevice(this.device as Device)  
-      .pipe(  
-        tap(() => this.router.navigate(['/device'])),  
-        catchError((err) => {  
-          console.error('Failed to add device', err);  
-          return of(undefined);  
-        })  
-      )  
-      .subscribe();  
-  }  
+  addDevice() {
+    this.deviceService
+      .createDevice(this.device as Device)
+      .pipe(
+        tap(() => {
+          this.toastService.presentToastSuccess('Device added successfully!');
+          this.router.navigate(['/device']);
+        }),
+        catchError((err) => {
+          console.error('Failed to add device', err);
+          this.toastService.presentToastError(err, 'Failed to add device');
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }
 }
