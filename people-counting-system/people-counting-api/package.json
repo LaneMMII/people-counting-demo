@@ -9,9 +9,9 @@
     "build": "tsc",
     "start": "tsx src/index.ts",
     "dev": "nodemon --exec tsx src/index.ts",
-    "migrate": "psql -U postgres -h localhost -d people_counting -f ../migrations/v0.1.sql",
-    "seed": "psql -U postgres -h localhost -d people_counting -f ../migrations/seed.sql",
-    "backfill": "psql -U postgres -h localhost -d people_counting -f ../migrations/backfill-counts.sql"
+    "migrate": "bash -c 'PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $PEOPLE_COUNTING_DB_NAME -f ../migrations/v0.1.sql'",
+    "seed": "bash -c 'PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $PEOPLE_COUNTING_DB_NAME -f ../migrations/seed.sql'",
+    "backfill": "bash -c 'PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $PEOPLE_COUNTING_DB_NAME -f ../migrations/backfill-counts.sql'"
   },
   "keywords": [],
   "author": "",
