@@ -46,7 +46,7 @@ const now = moment();
 const fivePm = moment().set({ hour: 17, minute: 0, second: 0, millisecond: 0 });
 
 @Component({
-  selector: 'app-device-counts',
+  selector: 'app-location-counts',
   templateUrl: './location-counts.page.html',
   styleUrls: ['./location-counts.page.scss'],
   standalone: true,
@@ -160,7 +160,7 @@ export class LocationCountsPage implements OnInit {
     }
 
     const data = Object.entries(countsByTime).map(([timestamp, value]) => ({
-      x: new Date(timestamp),
+      x: moment.utc(timestamp).local().toDate(),
       in: value.in,
       out: value.out,
     }));
